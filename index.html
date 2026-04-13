@@ -2,87 +2,1434 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Macro Situation Deck</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Weekly Macroeconomic Monitoring &amp; Market Conditions Brief</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f8fafc; color: #111827; }
-  .header { background: #1e3a5f; color: white; padding: 20px 32px; display: flex; justify-content: space-between; align-items: center; }
-  .header h1 { font-size: 20px; font-weight: 700; letter-spacing: 0.05em; }
-  .header .date { font-size: 12px; opacity: 0.7; }
-  .container { max-width: 1200px; margin: 0 auto; padding: 24px 32px; }
-  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; }
-  .card { background: white; border: 1px solid #e5e7eb; border-radius: 10px; padding: 20px; }
-  .card h2 { font-size: 11px; font-weight: 700; color: #6b7280; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px; }
-  .markets { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
-  .analysis-card { background: white; border: 2px solid #1e3a5f; border-radius: 10px; padding: 20px; margin-top: 20px; }
-  .analysis-card h2 { font-size: 11px; font-weight: 700; color: #1e3a5f; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px; }
-  ul { list-style: none; padding: 0; }
-  .badge { display: inline-block; background: #1e3a5f; color: white; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 4px; margin-bottom: 12px; }
+:root{
+  --bg:#0a0a0a;--s1:#111111;--s2:#1a1a1a;--s3:#222222;
+  --border:#2a2a2a;--border2:#333333;
+  --text:#f0f0f0;--sub:#a0a0a0;--dim:#555;
+  --green:#22c55e;--red:#ef4444;--amber:#f59e0b;--blue:#3b82f6;--purple:#8b5cf6;--cyan:#06b6d4;
+  --sans:'Inter',sans-serif;--head:'Space Grotesk',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:13px;line-height:1.5;}
+
+/* COLORS */
+.clr-green{color:var(--green);}.clr-red{color:var(--red);}.clr-amber{color:var(--amber);}.clr-blue{color:var(--blue);}.clr-muted{color:var(--sub);}
+
+/* BADGES */
+.badge{font-size:10px;font-weight:600;padding:2px 8px;border-radius:3px;letter-spacing:0.06em;text-transform:uppercase;white-space:nowrap;}
+.badge-green{background:rgba(34,197,94,0.15);color:var(--green);border:1px solid rgba(34,197,94,0.3);}
+.badge-red{background:rgba(239,68,68,0.15);color:var(--red);border:1px solid rgba(239,68,68,0.3);}
+.badge-amber{background:rgba(245,158,11,0.15);color:var(--amber);border:1px solid rgba(245,158,11,0.3);}
+.badge-blue{background:rgba(59,130,246,0.15);color:var(--blue);border:1px solid rgba(59,130,246,0.3);}
+.badge-muted{background:rgba(160,160,160,0.1);color:var(--sub);border:1px solid rgba(160,160,160,0.2);}
+
+/* HEADER */
+.hdr{position:sticky;top:0;z-index:300;background:rgba(10,10,10,0.97);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;}
+.hdr-logo{font-family:var(--head);font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--text);}
+.hdr-right{display:flex;align-items:center;gap:12px;}
+.live-pill{display:flex;align-items:center;gap:5px;background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.25);border-radius:20px;padding:3px 10px;font-size:9px;font-weight:600;color:var(--green);letter-spacing:0.1em;}
+.live-dot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:blink 2s infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0.2;}}
+.hdr-time{font-size:10px;color:var(--sub);}
+
+/* TICKER */
+.ticker-bar{overflow:hidden;background:var(--s1);border-bottom:1px solid var(--border);padding:8px 0;}
+.ticker-inner{display:flex;gap:0;animation:scroll 90s linear infinite;white-space:nowrap;}
+.ticker-inner:hover{animation-play-state:paused;}
+@keyframes scroll{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+.ti{display:inline-flex;align-items:center;gap:7px;padding:0 16px;border-right:1px solid var(--border);font-size:11px;}
+.tn{color:var(--sub);font-weight:500;}.tp{color:var(--text);font-weight:600;}
+
+/* NAV */
+.nav{background:var(--s1);border-bottom:1px solid var(--border);display:flex;overflow-x:auto;padding:0 24px;}
+.nav::-webkit-scrollbar{height:0;}
+.ntab{padding:13px 18px;font-size:10px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--sub);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all 0.18s;user-select:none;font-family:var(--head);}
+.ntab:hover{color:var(--text);}.ntab.active{color:var(--blue);border-bottom-color:var(--blue);}
+
+/* LAYOUT */
+.wrap{max-width:1500px;margin:0 auto;padding:24px;}
+.tab{display:none;}.tab.active{display:block;}
+
+/* SECTION HEADERS */
+.sec-hdr-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;margin-top:28px;}
+.sec-hdr-row:first-child{margin-top:0;}
+.sec-hdr{font-family:var(--head);font-size:15px;font-weight:700;color:var(--text);}
+.sec-sub{font-size:11px;color:var(--sub);margin-top:2px;}
+
+/* CARDS */
+.card{background:var(--s1);border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+.card-hdr{padding:12px 16px;border-bottom:1px solid var(--border);background:var(--s2);display:flex;align-items:center;justify-content:space-between;}
+.card-title{font-family:var(--head);font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--sub);}
+.card-body{padding:16px;}
+
+/* STAT ROW */
+.stat-row{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:24px;}
+.stat{background:var(--s1);border:1px solid var(--border);border-radius:8px;padding:14px 16px;}
+.stat-lbl{font-size:9px;color:var(--sub);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;font-weight:500;}
+.stat-val{font-size:22px;font-weight:600;color:var(--text);font-family:var(--head);}
+.stat-sub2{font-size:10px;color:var(--dim);margin-top:3px;}
+
+/* SPARKLINES */
+.spark-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:24px;}
+.spark-card{background:var(--s1);border:1px solid var(--border);border-radius:8px;padding:14px;}
+.spark-name{font-size:10px;color:var(--sub);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:8px;font-weight:500;}
+
+/* REGIME SECTION */
+.regime-grid{display:grid;grid-template-columns:280px 1fr 1fr;gap:16px;margin-bottom:24px;}
+.regime-badge-wrap{display:flex;flex-direction:column;justify-content:center;align-items:center;background:var(--s1);border:1px solid var(--border);border-radius:8px;padding:24px 16px;text-align:center;gap:10px;}
+.regime-label{font-family:var(--head);font-size:13px;font-weight:700;}
+.regime-summary{font-size:12px;color:var(--sub);line-height:1.6;margin-top:6px;}
+.ca-list{background:var(--s1);border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+.ca-row{display:grid;grid-template-columns:90px 120px 1fr;gap:12px;align-items:start;padding:10px 16px;border-bottom:1px solid var(--border);}
+.ca-row:last-child{border-bottom:none;}
+.ca-signal{font-size:11px;color:var(--sub);font-weight:500;}
+.ca-reading{font-size:11px;font-weight:600;}
+.ca-detail{font-size:11px;color:var(--sub);}
+.drivers-list{background:var(--s1);border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+.driver-card{padding:12px 16px;border-bottom:1px solid var(--border);}
+.driver-card:last-child{border-bottom:none;}
+.driver-title{font-family:var(--head);font-size:12px;font-weight:700;color:var(--text);margin-bottom:8px;}
+.driver-row{display:flex;gap:8px;margin-bottom:4px;align-items:baseline;}
+.driver-lbl{font-size:9px;font-weight:600;color:var(--dim);letter-spacing:0.08em;text-transform:uppercase;min-width:55px;flex-shrink:0;}
+.driver-val{font-size:12px;color:var(--sub);line-height:1.5;}
+
+/* BRIEF */
+.brief-headline{font-family:var(--head);font-size:18px;font-weight:700;color:var(--text);line-height:1.4;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border);}
+.brief-para{font-size:13px;color:#c0c0c0;line-height:1.8;margin-bottom:14px;}
+.brief-callout{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px;}
+.brief-callout-item{background:var(--s2);border:1px solid var(--border);border-radius:6px;padding:12px 14px;}
+.brief-callout-lbl{font-size:9px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--sub);margin-bottom:6px;}
+.brief-callout-val{font-size:12px;color:var(--text);line-height:1.5;}
+.watchlist-tbl{width:100%;border-collapse:collapse;margin-top:0;}
+.watchlist-tbl th{font-size:9px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--dim);padding:8px 12px;border-bottom:1px solid var(--border);text-align:left;background:var(--s2);}
+.watchlist-tbl td{font-size:12px;color:var(--sub);padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top;line-height:1.5;}
+.watchlist-tbl tr:last-child td{border-bottom:none;}
+.watchlist-tbl tr:hover td{background:var(--s2);}
+.wl-event{color:var(--text);font-weight:500;}
+
+/* IMPACT CARDS */
+.impact-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.impact-card{background:var(--s1);border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+.impact-hdr{padding:12px 16px;background:var(--s2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;}
+.impact-title{font-family:var(--head);font-size:12px;font-weight:700;color:var(--text);}
+.impact-body{padding:14px 16px;}
+.impact-headline{font-size:12px;color:var(--sub);font-style:italic;margin-bottom:10px;line-height:1.5;border-left:3px solid var(--border2);padding-left:10px;}
+.impact-why{font-size:12px;color:#b0b0b0;line-height:1.6;margin-bottom:12px;}
+.tag-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:6px;}
+.tag-lbl{font-size:9px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--dim);min-width:50px;}
+.tag{font-size:10px;padding:2px 8px;border-radius:3px;font-weight:500;}
+.tag.clr-green{background:rgba(34,197,94,0.1);color:var(--green);border:1px solid rgba(34,197,94,0.2);}
+.tag.clr-red{background:rgba(239,68,68,0.1);color:var(--red);border:1px solid rgba(239,68,68,0.2);}
+.tag.clr-amber{background:rgba(245,158,11,0.1);color:var(--amber);border:1px solid rgba(245,158,11,0.2);}
+
+/* GEO RISK */
+.geo-tbl{width:100%;border-collapse:collapse;}
+.geo-tbl th{font-size:9px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--dim);padding:10px 14px;border-bottom:1px solid var(--border);text-align:left;background:var(--s2);}
+.geo-tr{cursor:pointer;transition:background 0.15s;}
+.geo-tr:hover td{background:var(--s2);}
+.geo-tr td{padding:12px 14px;border-bottom:1px solid var(--border);vertical-align:middle;font-size:12px;color:var(--sub);}
+.geo-title{color:var(--text);font-weight:600;font-size:12px;}
+.geo-region{color:var(--sub);font-size:11px;}
+.geo-sectors{font-size:11px;max-width:280px;}
+.geo-expand{color:var(--dim);font-size:10px;text-align:right;}
+.geo-detail-row td{padding:0;border-bottom:1px solid var(--border);}
+.geo-detail{padding:14px 16px;background:var(--s2);}
+.geo-detail-grid{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:16px;}
+.dl{font-size:9px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--dim);display:block;margin-bottom:4px;}
+.geo-detail p{font-size:12px;color:var(--sub);line-height:1.6;}
+
+/* CENTRAL BANKS */
+.cb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:14px;}
+.cb-card{background:var(--s1);border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+.cb-hdr{padding:14px 16px;background:var(--s2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.cb-name{font-family:var(--head);font-size:13px;font-weight:700;color:var(--text);}
+.cb-stance{font-size:11px;font-weight:700;padding:3px 10px;border-radius:4px;}
+.cb-stance.clr-green{background:rgba(34,197,94,0.12);color:var(--green);border:1px solid rgba(34,197,94,0.25);}
+.cb-stance.clr-red{background:rgba(239,68,68,0.12);color:var(--red);border:1px solid rgba(239,68,68,0.25);}
+.cb-stance.clr-amber{background:rgba(245,158,11,0.12);color:var(--amber);border:1px solid rgba(245,158,11,0.25);}
+.cb-body{padding:0;}
+.cb-section{padding:10px 16px;border-bottom:1px solid var(--border);}
+.cb-section p{font-size:12px;color:var(--sub);line-height:1.6;margin-top:4px;}
+.cb-impacts{display:grid;grid-template-columns:1fr 1fr 1fr;border-bottom:1px solid var(--border);}
+.cb-impacts>div{padding:10px 16px;border-right:1px solid var(--border);}
+.cb-impacts>div:last-child{border-right:none;}
+.cb-impacts p{font-size:11px;color:var(--sub);line-height:1.5;margin-top:4px;}
+.cb-risk{padding:10px 16px;font-size:12px;color:var(--red);}
+.cb-lbl{font-size:9px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--dim);}
+
+/* SECTORS */
+.sec-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;}
+.sec-card{background:var(--s1);border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+.sec-hdr{padding:12px 16px;background:var(--s2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.sec-name{font-family:var(--head);font-size:13px;font-weight:700;color:var(--text);}
+.sec-body{display:grid;grid-template-columns:1fr 1fr;gap:0;border-bottom:1px solid var(--border);}
+.sec-col{padding:12px 14px;}
+.sec-col:first-child{border-right:1px solid var(--border);}
+.sec-lbl{font-size:9px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;display:block;margin-bottom:6px;}
+.sec-list{list-style:none;padding:0;}
+.sec-list li{font-size:11px;color:var(--sub);padding:3px 0;line-height:1.5;padding-left:10px;position:relative;}
+.sec-list li::before{content:"•";position:absolute;left:0;color:var(--dim);}
+.sec-footer{padding:10px 14px;display:flex;flex-direction:column;gap:5px;font-size:11px;color:var(--sub);}
+
+/* SENTIMENT */
+.sent-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;}
+.sent-col-title{font-family:var(--head);font-size:13px;font-weight:700;margin-bottom:12px;}
+.sent-item{background:var(--s1);border:1px solid var(--border);border-radius:6px;padding:12px 14px;margin-bottom:10px;}
+.sent-theme{font-size:12px;font-weight:600;margin-bottom:5px;}
+.sent-detail{font-size:12px;color:var(--sub);line-height:1.6;margin-bottom:6px;}
+.sent-assets{font-size:10px;color:var(--dim);}
+.debate-item{background:var(--s1);border:1px solid var(--border);border-radius:6px;padding:12px 14px;margin-bottom:10px;}
+.debate-title{font-size:12px;font-weight:600;color:var(--text);margin-bottom:8px;}
+.debate-sides{display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--sub);}
+.rot-tbl{width:100%;border-collapse:collapse;}
+.rot-tbl tr:hover td{background:var(--s2);}
+.rot-tbl td{padding:10px 12px;border-bottom:1px solid var(--border);font-size:12px;vertical-align:top;}
+.rot-tbl tr:last-child td{border-bottom:none;}
+.rot-from{color:var(--sub);width:160px;}
+.rot-arrow{color:var(--dim);width:30px;text-align:center;}
+.rot-to{font-weight:600;width:160px;}
+.rot-signal{color:var(--sub);}
+
+/* NEWS */
+.news-list{display:flex;flex-direction:column;gap:0;}
+.news-row{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);}
+.news-row:last-child{border-bottom:none;}
+.news-bias-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px;}
+.news-content{flex:1;}
+.news-meta{display:flex;align-items:center;gap:8px;margin-bottom:4px;}
+.news-src{font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--sub);}
+.news-bias-lbl{font-size:9px;font-weight:600;letter-spacing:0.06em;}
+.news-title{font-size:13px;color:var(--text);text-decoration:none;line-height:1.5;display:block;}
+.news-title:hover{color:var(--blue);}
+
+/* MARKETS */
+.mkt-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;}
+.mkt-block{background:var(--s1);border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+.mkt-block-title{font-family:var(--head);font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--sub);padding:10px 14px;border-bottom:1px solid var(--border);background:var(--s2);}
+.mkt-tbl{width:100%;border-collapse:collapse;}
+.mkt-tbl th{font-size:9px;color:var(--dim);font-weight:600;letter-spacing:0.06em;text-transform:uppercase;padding:7px 12px;text-align:left;border-bottom:1px solid var(--border);}
+.mkt-tbl td{padding:9px 12px;border-bottom:1px solid var(--border);font-size:12px;}
+.mkt-tbl tr:last-child td{border-bottom:none;}
+.mkt-tbl tr:hover td{background:var(--s2);}
+.mkt-price{font-weight:600;font-family:var(--head);}
+.mkt-chg{font-weight:600;text-align:right;}
+
+/* INDICATORS */
+.ind-tbl{width:100%;border-collapse:collapse;}
+.ind-tbl tr:hover td{background:var(--s2);}
+.ind-tbl td{padding:10px 16px;border-bottom:1px solid var(--border);font-size:13px;}
+.ind-tbl tr:last-child td{border-bottom:none;}
+.ind-lbl{color:var(--sub);}
+.ind-val{text-align:right;font-weight:600;font-family:var(--head);color:var(--text);}
+
+/* FOOTER */
+.footer{text-align:center;padding:20px 24px;border-top:1px solid var(--border);margin-top:32px;font-size:11px;color:var(--dim);letter-spacing:0.05em;}
+.footer a{color:var(--dim);text-decoration:none;}.footer a:hover{color:var(--sub);}
+
+/* SCROLL */
+.scroll-box{max-height:520px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border) transparent;}
+.scroll-box::-webkit-scrollbar{width:4px;}.scroll-box::-webkit-scrollbar-thumb{background:var(--border);}
+
+/* LEFT ACCENTS */
+.al-g{border-left:3px solid var(--green);}.al-r{border-left:3px solid var(--red);}.al-b{border-left:3px solid var(--blue);}.al-a{border-left:3px solid var(--amber);}
 </style>
 </head>
 <body>
-<div class="header">
-  <h1>MACRO SITUATION DECK</h1>
-  <div class="date">Generated: Friday, April 10, 2026 — 07:18 PM</div>
+
+<div class="hdr">
+  <div class="hdr-logo">Weekly Macroeconomic Monitoring &amp; Market Conditions Brief</div>
+  <div class="hdr-right">
+    <div class="live-pill"><div class="live-dot"></div>LIVE DATA</div>
+    <div class="hdr-time">Monday, April 13, 2026 — 01:23 AM</div>
+  </div>
 </div>
-<div class="container">
-  <span class="badge">LIVE DATA</span>
-  <div class="markets">
-        <div style="background:#fef2f2;border:1px solid #e5e7eb;border-radius:8px;padding:12px 16px;min-width:130px;">
-          <div style="font-size:11px;color:#6b7280;font-weight:500;margin-bottom:4px;">S&P 500</div>
-          <div style="font-size:18px;font-weight:700;color:#111827;">6816.89</div>
-          <div style="font-size:12px;font-weight:600;color:#dc2626;">▼ 0.11%</div>
+
+<div class="ticker-bar">
+  <div class="ticker-inner"><span class="ti"><span class="tn">S&P 500</span><span class="tp">6,816.89</span><span style="color:#ef4444">▼0.11%</span></span><span class="ti"><span class="tn">Nasdaq 100</span><span class="tp">25,116.34</span><span style="color:#22c55e">▲0.14%</span></span><span class="ti"><span class="tn">Dow Jones</span><span class="tp">47,916.57</span><span style="color:#ef4444">▼0.56%</span></span><span class="ti"><span class="tn">Russell 2000</span><span class="tp">2,630.59</span><span style="color:#ef4444">▼0.22%</span></span><span class="ti"><span class="tn">VIX</span><span class="tp">19.23</span><span style="color:#ef4444">▼1.33%</span></span><span class="ti"><span class="tn">Technology</span><span class="tp">142.62</span><span style="color:#22c55e">▲0.39%</span></span><span class="ti"><span class="tn">Financials</span><span class="tp">50.77</span><span style="color:#ef4444">▼1.09%</span></span><span class="ti"><span class="tn">Energy</span><span class="tp">56.94</span><span style="color:#ef4444">▼0.68%</span></span><span class="ti"><span class="tn">Healthcare</span><span class="tp">147.31</span><span style="color:#ef4444">▼1.35%</span></span><span class="ti"><span class="tn">Industrials</span><span class="tp">171.52</span><span style="color:#ef4444">▼0.39%</span></span><span class="ti"><span class="tn">Consumer Disc</span><span class="tp">112.89</span><span style="color:#22c55e">▲0.13%</span></span><span class="ti"><span class="tn">Utilities</span><span class="tp">46.96</span><span style="color:#ef4444">▼0.40%</span></span><span class="ti"><span class="tn">Real Estate</span><span class="tp">42.82</span><span style="color:#22c55e">▲0.21%</span></span><span class="ti"><span class="tn">10Y Treasury</span><span class="tp">4.32</span><span style="color:#22c55e">▲0.56%</span></span><span class="ti"><span class="tn">2Y Treasury</span><span class="tp">3.59</span><span style="color:#22c55e">▲0.14%</span></span><span class="ti"><span class="tn">TLT (20Y)</span><span class="tp">86.49</span><span style="color:#ef4444">▼0.24%</span></span><span class="ti"><span class="tn">HYG (HY Bond)</span><span class="tp">79.96</span><span style="color:#ef4444">▼0.40%</span></span><span class="ti"><span class="tn">LQD (IG Bond)</span><span class="tp">109.20</span><span style="color:#ef4444">▼0.26%</span></span><span class="ti"><span class="tn">Crude Oil</span><span class="tp">104.13</span><span style="color:#22c55e">▲7.83%</span></span><span class="ti"><span class="tn">Natural Gas</span><span class="tp">2.67</span><span style="color:#22c55e">▲1.02%</span></span><span class="ti"><span class="tn">Gold</span><span class="tp">4,750.20</span><span style="color:#ef4444">▼0.25%</span></span><span class="ti"><span class="tn">Silver</span><span class="tp">74.57</span><span style="color:#ef4444">▼2.30%</span></span><span class="ti"><span class="tn">Copper</span><span class="tp">5.85</span><span style="color:#ef4444">▼0.32%</span></span><span class="ti"><span class="tn">Wheat</span><span class="tp">577.75</span><span style="color:#22c55e">▲1.18%</span></span><span class="ti"><span class="tn">USD Index</span><span class="tp">98.96</span><span style="color:#22c55e">▲0.31%</span></span><span class="ti"><span class="tn">EUR/USD</span><span class="tp">1.17</span><span style="color:#22c55e">▲0.02%</span></span><span class="ti"><span class="tn">GBP/USD</span><span class="tp">1.34</span><span style="color:#ef4444">▼0.14%</span></span><span class="ti"><span class="tn">USD/JPY</span><span class="tp">159.66</span><span style="color:#22c55e">▲0.34%</span></span><span class="ti"><span class="tn">USD/CNY</span><span class="tp">6.83</span><span style="color:#22c55e">▲0.01%</span></span><span class="ti"><span class="tn">USD/INR</span><span class="tp">93.35</span><span style="color:#22c55e">▲0.95%</span></span><span class="ti"><span class="tn">Bitcoin</span><span class="tp">70,997.94</span><span style="color:#ef4444">▼2.81%</span></span><span class="ti"><span class="tn">Ethereum</span><span class="tp">2,195.27</span><span style="color:#ef4444">▼3.94%</span></span><span class="ti"><span class="tn">Solana</span><span class="tp">82.08</span><span style="color:#ef4444">▼3.38%</span></span><span class="ti"><span class="tn">S&P 500</span><span class="tp">6,816.89</span><span style="color:#ef4444">▼0.11%</span></span><span class="ti"><span class="tn">Nasdaq 100</span><span class="tp">25,116.34</span><span style="color:#22c55e">▲0.14%</span></span><span class="ti"><span class="tn">Dow Jones</span><span class="tp">47,916.57</span><span style="color:#ef4444">▼0.56%</span></span><span class="ti"><span class="tn">Russell 2000</span><span class="tp">2,630.59</span><span style="color:#ef4444">▼0.22%</span></span><span class="ti"><span class="tn">VIX</span><span class="tp">19.23</span><span style="color:#ef4444">▼1.33%</span></span><span class="ti"><span class="tn">Technology</span><span class="tp">142.62</span><span style="color:#22c55e">▲0.39%</span></span><span class="ti"><span class="tn">Financials</span><span class="tp">50.77</span><span style="color:#ef4444">▼1.09%</span></span><span class="ti"><span class="tn">Energy</span><span class="tp">56.94</span><span style="color:#ef4444">▼0.68%</span></span><span class="ti"><span class="tn">Healthcare</span><span class="tp">147.31</span><span style="color:#ef4444">▼1.35%</span></span><span class="ti"><span class="tn">Industrials</span><span class="tp">171.52</span><span style="color:#ef4444">▼0.39%</span></span><span class="ti"><span class="tn">Consumer Disc</span><span class="tp">112.89</span><span style="color:#22c55e">▲0.13%</span></span><span class="ti"><span class="tn">Utilities</span><span class="tp">46.96</span><span style="color:#ef4444">▼0.40%</span></span><span class="ti"><span class="tn">Real Estate</span><span class="tp">42.82</span><span style="color:#22c55e">▲0.21%</span></span><span class="ti"><span class="tn">10Y Treasury</span><span class="tp">4.32</span><span style="color:#22c55e">▲0.56%</span></span><span class="ti"><span class="tn">2Y Treasury</span><span class="tp">3.59</span><span style="color:#22c55e">▲0.14%</span></span><span class="ti"><span class="tn">TLT (20Y)</span><span class="tp">86.49</span><span style="color:#ef4444">▼0.24%</span></span><span class="ti"><span class="tn">HYG (HY Bond)</span><span class="tp">79.96</span><span style="color:#ef4444">▼0.40%</span></span><span class="ti"><span class="tn">LQD (IG Bond)</span><span class="tp">109.20</span><span style="color:#ef4444">▼0.26%</span></span><span class="ti"><span class="tn">Crude Oil</span><span class="tp">104.13</span><span style="color:#22c55e">▲7.83%</span></span><span class="ti"><span class="tn">Natural Gas</span><span class="tp">2.67</span><span style="color:#22c55e">▲1.02%</span></span><span class="ti"><span class="tn">Gold</span><span class="tp">4,750.20</span><span style="color:#ef4444">▼0.25%</span></span><span class="ti"><span class="tn">Silver</span><span class="tp">74.57</span><span style="color:#ef4444">▼2.30%</span></span><span class="ti"><span class="tn">Copper</span><span class="tp">5.85</span><span style="color:#ef4444">▼0.32%</span></span><span class="ti"><span class="tn">Wheat</span><span class="tp">577.75</span><span style="color:#22c55e">▲1.18%</span></span><span class="ti"><span class="tn">USD Index</span><span class="tp">98.96</span><span style="color:#22c55e">▲0.31%</span></span><span class="ti"><span class="tn">EUR/USD</span><span class="tp">1.17</span><span style="color:#22c55e">▲0.02%</span></span><span class="ti"><span class="tn">GBP/USD</span><span class="tp">1.34</span><span style="color:#ef4444">▼0.14%</span></span><span class="ti"><span class="tn">USD/JPY</span><span class="tp">159.66</span><span style="color:#22c55e">▲0.34%</span></span><span class="ti"><span class="tn">USD/CNY</span><span class="tp">6.83</span><span style="color:#22c55e">▲0.01%</span></span><span class="ti"><span class="tn">USD/INR</span><span class="tp">93.35</span><span style="color:#22c55e">▲0.95%</span></span><span class="ti"><span class="tn">Bitcoin</span><span class="tp">70,997.94</span><span style="color:#ef4444">▼2.81%</span></span><span class="ti"><span class="tn">Ethereum</span><span class="tp">2,195.27</span><span style="color:#ef4444">▼3.94%</span></span><span class="ti"><span class="tn">Solana</span><span class="tp">82.08</span><span style="color:#ef4444">▼3.38%</span></span></div>
+</div>
+
+<div class="nav">
+  <div class="ntab active" onclick="show('overview',this)">Overview</div>
+  <div class="ntab" onclick="show('brief',this)">Morning Brief</div>
+  <div class="ntab" onclick="show('regime',this)">Macro Regime</div>
+  <div class="ntab" onclick="show('impact',this)">Market Impact</div>
+  <div class="ntab" onclick="show('geo',this)">Geo Risk</div>
+  <div class="ntab" onclick="show('cb',this)">Central Banks</div>
+  <div class="ntab" onclick="show('sectors',this)">Sectors</div>
+  <div class="ntab" onclick="show('sentiment',this)">Sentiment</div>
+  <div class="ntab" onclick="show('markets',this)">Markets</div>
+  <div class="ntab" onclick="show('indicators',this)">Indicators</div>
+  <div class="ntab" onclick="show('news',this)">News Feed</div>
+</div>
+
+<!-- ═══ OVERVIEW ═══ -->
+<div id="tab-overview" class="tab active"><div class="wrap">
+  <div class="stat-row">
+    <div class="stat al-g"><div class="stat-lbl">Fed Funds Rate</div><div class="stat-val">3.64%</div><div class="stat-sub2">Current target</div></div>
+    <div class="stat al-b"><div class="stat-lbl">Unemployment</div><div class="stat-val">4.3%</div><div class="stat-sub2">Latest reading</div></div>
+    <div class="stat al-a"><div class="stat-lbl">CPI Index</div><div class="stat-val">330.293</div><div class="stat-sub2">Latest reading</div></div>
+    <div class="stat al-g"><div class="stat-lbl">Yield Curve</div><div class="stat-val">0.5</div><div class="stat-sub2">10Y minus 2Y</div></div>
+    <div class="stat al-r"><div class="stat-lbl">Consumer Sentiment</div><div class="stat-val">56.6</div><div class="stat-sub2">U of Michigan</div></div>
+    <div class="stat al-a"><div class="stat-lbl">WTI Crude</div><div class="stat-val">$114.01</div><div class="stat-sub2">Per barrel</div></div>
+  </div>
+
+  <div class="spark-row">
+    <div class="spark-card al-g"><div class="spark-name">S&amp;P 500 — 30 Day Price (USD)</div><canvas id="sp-spark" height="55"></canvas></div>
+    <div class="spark-card al-b"><div class="spark-name">10Y Treasury Yield (%) — 30 Day</div><canvas id="tnx-spark" height="55"></canvas></div>
+    <div class="spark-card al-a"><div class="spark-name">Crude Oil (USD/bbl) — 30 Day</div><canvas id="oil-spark" height="55"></canvas></div>
+    <div class="spark-card" style="border-left:3px solid var(--purple);background:var(--s1);border-radius:8px;padding:14px;"><div class="spark-name">Gold (USD/oz) — 30 Day</div><canvas id="gold-spark" height="55"></canvas></div>
+  </div>
+
+  <div class="regime-grid">
+    <div class="regime-badge-wrap">
+      <div class="stat-lbl" style="text-align:center;">CURRENT MARKET REGIME</div>
+      <div class="regime-label clr-red" style="font-size:14px;">Risk-Off / Inflationary / Growth-Negative</div>
+      <p class="regime-summary">A full-blown stagflationary shock is underway driven by the Iran war and Strait of Hormuz blockade threat, with oil above $100 feeding through to surging CPI while consumer sentiment collapses to recessionary levels. The Fed is trapped with inflation re-accelerating and growth softening simultaneously, leaving no policy relief valve. Risk assets face sustained pressure as rising real rates, energy-driven margin compression, and geopolitical uncertainty create a toxic backdrop for both equities and bonds.</p>
+    </div>
+    <div class="ca-list">
+      <div class="card-hdr"><span class="card-title">Cross-Asset Signals</span></div>
+      <div class="ca-row">
+          <span class="ca-signal">Equities</span>
+          <span class="ca-reading clr-red">Bearish</span>
+          <span class="ca-detail">S&P 500 slipping with broad sector weakness in financials, healthcare, and energy despite tech resilience, reflecting stagflationary rotation pressures.</span>
+        </div><div class="ca-row">
+          <span class="ca-signal">Yields</span>
+          <span class="ca-reading clr-red">Rising</span>
+          <span class="ca-detail">10Y Treasury at 4.32% rising on inflation repricing from the oil shock, tightening financial conditions even as growth deteriorates.</span>
+        </div><div class="ca-row">
+          <span class="ca-signal">Oil</span>
+          <span class="ca-reading clr-green">Bullish</span>
+          <span class="ca-detail">Crude surged 7.8% above $104 with WTI reference at $114 as Strait of Hormuz blockade threat creates the most significant supply disruption risk in decades.</span>
+        </div><div class="ca-row">
+          <span class="ca-signal">Gold</span>
+          <span class="ca-reading clr-amber">Defensive</span>
+          <span class="ca-detail">Gold at $4,750 is off slightly but holding near extraordinary levels, reflecting deeply entrenched geopolitical hedging and inflation fear.</span>
+        </div><div class="ca-row">
+          <span class="ca-signal">USD</span>
+          <span class="ca-reading clr-amber">Firm</span>
+          <span class="ca-detail">DXY at 98.96 gaining modestly as relative safe-haven demand offsets concerns about U.S. stagflation, though remains historically weak.</span>
+        </div><div class="ca-row">
+          <span class="ca-signal">VIX</span>
+          <span class="ca-reading clr-red">Elevated</span>
+          <span class="ca-detail">VIX at 19.23 is above normal but eased slightly, suggesting markets may be past peak panic but remain priced for significant tail risk from escalation.</span>
         </div>
-        <div style="background:#f0fdf4;border:1px solid #e5e7eb;border-radius:8px;padding:12px 16px;min-width:130px;">
-          <div style="font-size:11px;color:#6b7280;font-weight:500;margin-bottom:4px;">Nasdaq</div>
-          <div style="font-size:18px;font-weight:700;color:#111827;">22902.89</div>
-          <div style="font-size:12px;font-weight:600;color:#16a34a;">▲ 0.35%</div>
-        </div>
-        <div style="background:#fef2f2;border:1px solid #e5e7eb;border-radius:8px;padding:12px 16px;min-width:130px;">
-          <div style="font-size:11px;color:#6b7280;font-weight:500;margin-bottom:4px;">Dow Jones</div>
-          <div style="font-size:18px;font-weight:700;color:#111827;">47916.57</div>
-          <div style="font-size:12px;font-weight:600;color:#dc2626;">▼ 0.56%</div>
-        </div>
-        <div style="background:#f0fdf4;border:1px solid #e5e7eb;border-radius:8px;padding:12px 16px;min-width:130px;">
-          <div style="font-size:11px;color:#6b7280;font-weight:500;margin-bottom:4px;">10Y Treasury</div>
-          <div style="font-size:18px;font-weight:700;color:#111827;">4.32</div>
-          <div style="font-size:12px;font-weight:600;color:#16a34a;">▲ 0.56%</div>
-        </div>
-        <div style="background:#fef2f2;border:1px solid #e5e7eb;border-radius:8px;padding:12px 16px;min-width:130px;">
-          <div style="font-size:11px;color:#6b7280;font-weight:500;margin-bottom:4px;">Gold</div>
-          <div style="font-size:18px;font-weight:700;color:#111827;">4771.00</div>
-          <div style="font-size:12px;font-weight:600;color:#dc2626;">▼ 0.44%</div>
-        </div>
-        <div style="background:#fef2f2;border:1px solid #e5e7eb;border-radius:8px;padding:12px 16px;min-width:130px;">
-          <div style="font-size:11px;color:#6b7280;font-weight:500;margin-bottom:4px;">Crude Oil</div>
-          <div style="font-size:18px;font-weight:700;color:#111827;">95.63</div>
-          <div style="font-size:12px;font-weight:600;color:#dc2626;">▼ 2.29%</div>
-        </div>
-        <div style="background:#fef2f2;border:1px solid #e5e7eb;border-radius:8px;padding:12px 16px;min-width:130px;">
-          <div style="font-size:11px;color:#6b7280;font-weight:500;margin-bottom:4px;">USD Index</div>
-          <div style="font-size:18px;font-weight:700;color:#111827;">98.70</div>
-          <div style="font-size:12px;font-weight:600;color:#dc2626;">▼ 0.12%</div>
-        </div>
-        <div style="background:#fef2f2;border:1px solid #e5e7eb;border-radius:8px;padding:12px 16px;min-width:130px;">
-          <div style="font-size:11px;color:#6b7280;font-weight:500;margin-bottom:4px;">VIX</div>
-          <div style="font-size:18px;font-weight:700;color:#111827;">19.23</div>
-          <div style="font-size:12px;font-weight:600;color:#dc2626;">▼ 1.33%</div>
+    </div>
+    <div class="drivers-list">
+      <div class="card-hdr"><span class="card-title">Top Macro Drivers</span><span class="badge badge-blue">AI</span></div>
+      <div class="scroll-box"><div class="driver-card">
+          <div class="driver-title">Iran War & Strait of Hormuz Blockade</div>
+          <div class="driver-row"><span class="driver-lbl">CHANGED</span><span class="driver-val">Peace talks failed and Trump threatened a U.S. Navy blockade of Iran's ports, sending crude oil surging 7.8% above $100/bbl with WTI reference at $114.</span></div>
+          <div class="driver-row"><span class="driver-lbl">IMPACT</span><span class="driver-val">Massive supply shock repricing across energy, inflation expectations, and consumer discretionary sectors as stagflationary risks intensify.</span></div>
+          <div class="driver-row"><span class="driver-lbl">WINNERS</span><span class="driver-val clr-green">Crude oil, natural gas, defense stocks, commodities broadly</span></div>
+          <div class="driver-row"><span class="driver-lbl">LOSERS</span><span class="driver-val clr-red">Airlines, consumer discretionary, transports, emerging markets, bonds</span></div>
+        </div><div class="driver-card">
+          <div class="driver-title">Inflation Surge & Consumer Squeeze</div>
+          <div class="driver-row"><span class="driver-lbl">CHANGED</span><span class="driver-val">U.S. CPI surged in March driven by war-related energy price pass-through, with gasoline prices hitting record jumps and companies citing war as justification for broad price increases.</span></div>
+          <div class="driver-row"><span class="driver-lbl">IMPACT</span><span class="driver-val">10Y yields rose to 4.32% as markets reprice the Fed's ability to cut further, while consumer sentiment at 56.6 signals deep household stress.</span></div>
+          <div class="driver-row"><span class="driver-lbl">WINNERS</span><span class="driver-val clr-green">TIPS, commodities, energy equities, inflation-linked assets</span></div>
+          <div class="driver-row"><span class="driver-lbl">LOSERS</span><span class="driver-val clr-red">Long-duration bonds (TLT), consumer staples, retail, housing</span></div>
+        </div><div class="driver-card">
+          <div class="driver-title">Fed Policy Trapped Between Inflation and Weakness</div>
+          <div class="driver-row"><span class="driver-lbl">CHANGED</span><span class="driver-val">Fed funds at 3.64% with CPI accelerating and unemployment at 4.3% creates a classic stagflationary bind where the Fed cannot ease despite softening growth.</span></div>
+          <div class="driver-row"><span class="driver-lbl">IMPACT</span><span class="driver-val">The yield curve remains modestly positive at +50bps but rising long rates with sticky short rates compress risk premiums and pressure equity multiples.</span></div>
+          <div class="driver-row"><span class="driver-lbl">WINNERS</span><span class="driver-val clr-green">Short-duration credit, money market funds, floating-rate debt</span></div>
+          <div class="driver-row"><span class="driver-lbl">LOSERS</span><span class="driver-val clr-red">Growth/long-duration equities, REITs, leveraged borrowers, HYG</span></div>
+        </div><div class="driver-card">
+          <div class="driver-title">Consumer Spending Under Strain</div>
+          <div class="driver-row"><span class="driver-lbl">CHANGED</span><span class="driver-val">Record gasoline price jump and war-driven inflation are eroding real purchasing power, with consumer sentiment at recessionary levels of 56.6 and spending described as 'under strain.'</span></div>
+          <div class="driver-row"><span class="driver-lbl">IMPACT</span><span class="driver-val">Financials fell 1.09% and healthcare dropped 1.35% as markets price deteriorating consumer fundamentals and potential credit stress ahead.</span></div>
+          <div class="driver-row"><span class="driver-lbl">WINNERS</span><span class="driver-val clr-green">Discount retailers, utilities (defensive), gold</span></div>
+          <div class="driver-row"><span class="driver-lbl">LOSERS</span><span class="driver-val clr-red">Financials, consumer discretionary, small caps (Russell 2000)</span></div>
+        </div><div class="driver-card">
+          <div class="driver-title">Global Contagion & European Weakness</div>
+          <div class="driver-row"><span class="driver-lbl">CHANGED</span><span class="driver-val">European political stress compounds with war fallout; German services PMI fell to 9-month low of 49.4 entering contraction, while Swiss National Bank cut rates 50bps to 0.5%.</span></div>
+          <div class="driver-row"><span class="driver-lbl">IMPACT</span><span class="driver-val">USD firmed modestly to 98.96 on relative safe-haven flows, but EUR/USD at 1.17 and weak European data suggest global growth synchronization to the downside.</span></div>
+          <div class="driver-row"><span class="driver-lbl">WINNERS</span><span class="driver-val clr-green">USD, U.S. Treasuries (relative), Swiss franc (post-cut repositioning)</span></div>
+          <div class="driver-row"><span class="driver-lbl">LOSERS</span><span class="driver-val clr-red">European equities, EUR, GBP, export-sensitive industrials</span></div>
         </div></div>
-  <div class="grid">
-    <div class="card">
-      <h2>Macro Indicators (FRED)</h2>
-      <ul><li style='padding:4px 0;border-bottom:1px solid #f3f4f6;font-size:13px;'>Fed Funds Rate (%): 3.64</li><li style='padding:4px 0;border-bottom:1px solid #f3f4f6;font-size:13px;'>CPI Index: 330.293</li><li style='padding:4px 0;border-bottom:1px solid #f3f4f6;font-size:13px;'>Unemployment Rate (%): 4.3</li><li style='padding:4px 0;border-bottom:1px solid #f3f4f6;font-size:13px;'>WTI Crude Oil Price ($/barrel): 114.01</li><li style='padding:4px 0;border-bottom:1px solid #f3f4f6;font-size:13px;'>10Y-2Y Treasury Spread: 0.5</li></ul>
-    </div>
-    <div class="card">
-      <h2>Top Headlines</h2>
-      <ul><li style='padding:5px 0;border-bottom:1px solid #f3f4f6;font-size:13px;'>• Elon Musk in a post on X says some of his Trump posts ‘went too far’ and that he regrets them</li><li style='padding:5px 0;border-bottom:1px solid #f3f4f6;font-size:13px;'>• Bank of England decision on Thursday will be at 12:02 p.m. local time instead of 12 p.m., due to VE Day’s two minutes of silence</li><li style='padding:5px 0;border-bottom:1px solid #f3f4f6;font-size:13px;'>• Swiss National Bank cuts interest rates by a half point to 0.5%</li><li style='padding:5px 0;border-bottom:1px solid #f3f4f6;font-size:13px;'>• Dollar jumps 0.5% to 0.8890 francs</li><li style='padding:5px 0;border-bottom:1px solid #f3f4f6;font-size:13px;'>• Democrats Denounce Trump’s Plan to Use Foreign Steel in White House Ballroom</li><li style='padding:5px 0;border-bottom:1px solid #f3f4f6;font-size:13px;'>• A Record Jump in U.S. Gasoline Prices Is Squeezing Consumers</li><li style='padding:5px 0;border-bottom:1px solid #f3f4f6;font-size:13px;'>• The Iran War Has Prompted Some Companies to Raise Prices</li><li style='padding:5px 0;border-bottom:1px solid #f3f4f6;font-size:13px;'>• U.S. Inflation Surged in March as Iran War Pushed Up Prices</li></ul>
     </div>
   </div>
-  <div class="analysis-card">
-    <h2>AI Analysis — Claude Opus</h2>
-    <p style='margin:4px 0;font-size:13px;line-height:1.6;color:#374151;'># MORNING BRIEFING | May 8, 2025</p><br><p style='margin:4px 0;font-size:13px;line-height:1.6;color:#374151;'>---</p><br><h3 style='color:#1e3a5f;font-size:13px;font-weight:700;margin:16px 0 4px;text-transform:uppercase;letter-spacing:0.05em;'>## SITUATION OVERVIEW</h3><br><p style='margin:4px 0;font-size:13px;line-height:1.6;color:#374151;'>The Iran conflict is now the dominant macro driver, pushing WTI crude to $114/barrel, fueling a surge in CPI (330.293), and squeezing consumers through record gasoline prices — all while the Fed sits at a relatively accommodative 3.64% funds rate that is clearly behind the inflation curve. This is a stagflationary setup: war-driven supply shocks are accelerating prices while unemployment has already drifted to 4.3%, leaving the Fed in a policy bind that markets have not fully priced.</p><br><p style='margin:4px 0;font-size:13px;line-height:1.6;color:#374151;'>---</p><br><h3 style='color:#1e3a5f;font-size:13px;font-weight:700;margin:16px 0 4px;text-transform:uppercase;letter-spacing:0.05em;'>## TOP 3 THEMES</h3><br><p style='margin:4px 0;font-size:13px;line-height:1.6;color:#374151;'>**1. Iran War Inflation Shock**</p><p style='margin:4px 0;font-size:13px;line-height:1.6;color:#374151;'>Conflict-driven energy prices are feeding directly into headline CPI and corporate pricing behavior, with companies openly citing the war as justification for margin-protecting price hikes.</p><p style='margin:4px 0;font-size:13px;line-height:1.6;color:#374151;'>*Assets affected: Crude oil, gasoline futures, TIPS breakevens, consumer discretionary equities, gold.*</p><br><p style='margin:4px 0;font-size:13px;line-height:1.6;color:#374151;'>**2. Global Rate Divergence Accelerating**</p><p style='margin:4px 0;font-size:13px;line-height:1.6;color:#374151;'>The SNB just cut 50bps to 0.5% while the BoE decides tomorrow — central banks are fracturing on policy direction, creating sharp FX dislocations (USD/CHF +0.5% on the SNB cut) even as the Fed remains frozen.</p><p style='margin:4px 0;font-size:13px;line-height:1.6;color:#374151;'>*Assets affected: USD/CHF, EUR/USD, DXY, front-end rates, carry trades.*</p><br><p style='margin:4px 0;font-size:13px;line-height:1.6;color:#374151;'>**3. Equity Resilience Masking Rotation Stress**</p><p style='margin:4px 0;font-size:13px;line-height:1.6;color:#374151;'>The S&P is off just 11bps and Nasdaq is green, but the Dow's -56bps underperformance signals old-economy/consumer-facing names are absorbing the energy tax while mega-cap tech holds indexes up — a narrow and fragile leadership regime.</p><p style='margin:4px 0;font-size:13px;line-height:1.6;color:#374151;'>*Assets affected: Dow vs. Nasdaq spread, consumer staples/discretionary, equal-weight S&P vs. cap-weight.*</p><br><p style='margin:4px 0;font-size:13px;line-height:1.6;color:#374151;'>---</p><br><h3 style='color:#1e3a5f;font-size:13px;font-weight:700;margin:16px 0 4px;text-transform:uppercase;letter-spacing:0.05em;'>## MARKET IMPLICATIONS</h3><br><p style='margin:4px 0;font-size:13px;line-height:1.6;color:#374151;'>**Watch today:** The crude-gold divergence is notable — gold falling 44bps despite an active war and inflation surge suggests either profit-taking or real-rate repricing as 10Y yields push to 4.32%. If gold can't hold $4,750 while crude stays above $110, it signals the market is pricing a hawkish Fed pivot over safe-haven demand. The 10Y-2Y spread at +50bps with a 3.64% funds rate implies the curve is pricing significant tightening ahead — monitor fed funds futures for any movement toward a June hike. The VIX at 19.23 feels complacent given the geopolitical backdrop; any crude spike above $120 could trigger a vol repricing. The DXY weakening despite rising yields is a warning sign — watch for foreign reserve diversification flows.</p><br><p style='margin:4px 0;font-size:13px;line-height:1.6;color:#374151;'>---</p><br><h3 style='color:#1e3a5f;font-size:13px;font-weight:700;margin:16px 0 4px;text-transform:uppercase;letter-spacing:0.05em;'>## FED WATCH</h3><br><p style='margin:4px 0;font-size:13px;line-height:1.6;color:#374151;'>The Fed at 3.64% is materially behind the curve with CPI at these levels and a war-driven supply shock that monetary policy cannot directly address — a classic cost-push dilemma. The positive 10Y-2Y spread and rising long-end yields suggest the market expects the Fed will be forced to hike into economic weakness, but the 4.3% unemployment rate is likely giving the FOMC cover to delay, risking an even more painful tightening cycle later.</p><br><p style='margin:4px 0;font-size:13px;line-height:1.6;color:#374151;'>---</p><br><h3 style='color:#1e3a5f;font-size:13px;font-weight:700;margin:16px 0 4px;text-transform:uppercase;letter-spacing:0.05em;'>## ANALYST TONE</h3><br><p style='margin:4px 0;font-size:13px;line-height:1.6;color:#374151;'>**Mixed — leaning Risk-Off.** Surface-level index stability is masking deteriorating macro fundamentals: stagflationary inputs are building, central bank coherence is breaking down, and the equity market's calm (VIX 19) is inconsistent with $114 crude, surging inflation, and an active military conflict.</p><br><p style='margin:4px 0;font-size:13px;line-height:1.6;color:#374151;'>---</p><br><p style='margin:4px 0;font-size:13px;line-height:1.6;color:#374151;'>*Prepared for internal distribution. Not investment advice.*</p>
+
+  <div style="display:grid;grid-template-columns:1fr 340px;gap:16px;">
+    <div class="card al-b">
+      <div class="card-hdr"><span class="card-title">FRED Macro Indicators</span><span class="badge badge-blue">FEDERAL RESERVE</span></div>
+      <div class="card-body" style="padding:0;">
+        <table class="ind-tbl"><tbody><tr><td class="ind-lbl">Fed Funds Rate (%)</td><td class="ind-val">3.64</td></tr><tr><td class="ind-lbl">CPI Index</td><td class="ind-val">330.293</td></tr><tr><td class="ind-lbl">Core CPI</td><td class="ind-val">334.165</td></tr><tr><td class="ind-lbl">Unemployment (%)</td><td class="ind-val">4.3</td></tr><tr><td class="ind-lbl">GDP (B USD)</td><td class="ind-val">31422.526</td></tr><tr><td class="ind-lbl">Retail Sales (M USD)</td><td class="ind-val">738366.0</td></tr><tr><td class="ind-lbl">Housing Starts (K)</td><td class="ind-val">1487.0</td></tr><tr><td class="ind-lbl">WTI Crude ($/bbl)</td><td class="ind-val">114.01</td></tr><tr><td class="ind-lbl">10Y-2Y Spread</td><td class="ind-val">0.5</td></tr><tr><td class="ind-lbl">10Y Breakeven Inflation</td><td class="ind-val">2.36</td></tr><tr><td class="ind-lbl">M2 Money Supply (B)</td><td class="ind-val">22667.3</td></tr><tr><td class="ind-lbl">Consumer Sentiment</td><td class="ind-val">56.6</td></tr><tr><td class="ind-lbl">Nonfarm Payrolls (K)</td><td class="ind-val">158637</td></tr><tr><td class="ind-lbl">Industrial Production</td><td class="ind-val">102.551</td></tr><tr><td class="ind-lbl">30Y Mortgage Rate (%)</td><td class="ind-val">6.37</td></tr></tbody></table>
+      </div>
+    </div>
+    <div class="card al-g">
+      <div class="card-hdr"><span class="card-title">Live Headlines</span><span class="badge badge-green">LIVE</span></div>
+      <div class="scroll-box" style="max-height:400px;padding:0 16px;"><div class="news-row">
+          <div class="news-bias-dot" style="background:#6b7280;" title="CENTER"></div>
+          <div class="news-content">
+            <div class="news-meta"><span class="news-src">NYT Economy</span><span class="news-bias-lbl" style="color:#6b7280;">CENTER</span></div>
+            <a href="https://www.nytimes.com/2026/04/11/business/europe-economy-trump-trade-iran.html" target="_blank" class="news-title">Fallout of War Piles Economic Pain Onto Europe’s Political Stress</a>
+          </div>
+        </div><div class="news-row">
+          <div class="news-bias-dot" style="background:#3b82f6;" title="LEFT"></div>
+          <div class="news-content">
+            <div class="news-meta"><span class="news-src">NYT Economy</span><span class="news-bias-lbl" style="color:#3b82f6;">LEFT</span></div>
+            <a href="https://www.nytimes.com/2026/04/10/us/politics/democrats-trump-steel-white-house-ballroom.html" target="_blank" class="news-title">Democrats Denounce Trump’s Plan to Use Foreign Steel in White House Ballroom</a>
+          </div>
+        </div><div class="news-row">
+          <div class="news-bias-dot" style="background:#6b7280;" title="CENTER"></div>
+          <div class="news-content">
+            <div class="news-meta"><span class="news-src">NYT Economy</span><span class="news-bias-lbl" style="color:#6b7280;">CENTER</span></div>
+            <a href="https://www.nytimes.com/2026/04/10/business/economy/gasoline-price-rise.html" target="_blank" class="news-title">A Record Jump in U.S. Gasoline Prices Is Squeezing Consumers</a>
+          </div>
+        </div><div class="news-row">
+          <div class="news-bias-dot" style="background:#6b7280;" title="CENTER"></div>
+          <div class="news-content">
+            <div class="news-meta"><span class="news-src">NYT Economy</span><span class="news-bias-lbl" style="color:#6b7280;">CENTER</span></div>
+            <a href="https://www.nytimes.com/2026/04/10/business/economy/iran-war-inflation-company-prices.html" target="_blank" class="news-title">The Iran War Has Prompted Some Companies to Raise Prices</a>
+          </div>
+        </div><div class="news-row">
+          <div class="news-bias-dot" style="background:#6b7280;" title="CENTER"></div>
+          <div class="news-content">
+            <div class="news-meta"><span class="news-src">NYT Economy</span><span class="news-bias-lbl" style="color:#6b7280;">CENTER</span></div>
+            <a href="https://www.nytimes.com/2026/04/10/business/economy/what-to-know-about-the-report.html" target="_blank" class="news-title">U.S. Inflation Surged in March as Iran War Pushed Up Prices</a>
+          </div>
+        </div><div class="news-row">
+          <div class="news-bias-dot" style="background:#6b7280;" title="CENTER"></div>
+          <div class="news-content">
+            <div class="news-meta"><span class="news-src">NYT Economy</span><span class="news-bias-lbl" style="color:#6b7280;">CENTER</span></div>
+            <a href="https://www.nytimes.com/2026/04/10/business/economy/consumer-spending-economy.html" target="_blank" class="news-title">Consumer Spending, Engine of the U.S. Economy, Is Under Strain</a>
+          </div>
+        </div><div class="news-row">
+          <div class="news-bias-dot" style="background:#6b7280;" title="CENTER"></div>
+          <div class="news-content">
+            <div class="news-meta"><span class="news-src">NYT Business</span><span class="news-bias-lbl" style="color:#6b7280;">CENTER</span></div>
+            <a href="https://www.nytimes.com/2026/04/13/business/energy-environment/china-energy-battery-grid.html" target="_blank" class="news-title">China’s Electrostate Is Poised to Win From War in the Middle East</a>
+          </div>
+        </div><div class="news-row">
+          <div class="news-bias-dot" style="background:#6b7280;" title="CENTER"></div>
+          <div class="news-content">
+            <div class="news-meta"><span class="news-src">NYT Business</span><span class="news-bias-lbl" style="color:#6b7280;">CENTER</span></div>
+            <a href="https://www.nytimes.com/2026/04/12/technology/elon-musk-tiktok.html" target="_blank" class="news-title">Elon Musk, Who Owns X, Appears to Post on TikTok</a>
+          </div>
+        </div><div class="news-row">
+          <div class="news-bias-dot" style="background:#6b7280;" title="CENTER"></div>
+          <div class="news-content">
+            <div class="news-meta"><span class="news-src">NYT Business</span><span class="news-bias-lbl" style="color:#6b7280;">CENTER</span></div>
+            <a href="https://www.nytimes.com/2026/04/12/business/oil-prices-surge-above-100-after-peace-talks-fail-and-trump-threatens-blockade.html" target="_blank" class="news-title">Oil Prices Surge Above $100 After Peace Talks Fail and Trump Threatens Blockade</a>
+          </div>
+        </div><div class="news-row">
+          <div class="news-bias-dot" style="background:#6b7280;" title="CENTER"></div>
+          <div class="news-content">
+            <div class="news-meta"><span class="news-src">NYT Business</span><span class="news-bias-lbl" style="color:#6b7280;">CENTER</span></div>
+            <a href="https://www.nytimes.com/2026/04/12/world/americas/canada-quebec-premier-christine-frechette.html" target="_blank" class="news-title">Christine Fréchette Is Chosen to Lead Coalition Avenir Québec</a>
+          </div>
+        </div><div class="news-row">
+          <div class="news-bias-dot" style="background:#6b7280;" title="CENTER"></div>
+          <div class="news-content">
+            <div class="news-meta"><span class="news-src">NYT Business</span><span class="news-bias-lbl" style="color:#6b7280;">CENTER</span></div>
+            <a href="https://www.nytimes.com/2026/04/12/business/annoyance-economy-costs.html" target="_blank" class="news-title">The ‘Annoyance Economy’ Is More Than Just Annoying</a>
+          </div>
+        </div><div class="news-row">
+          <div class="news-bias-dot" style="background:#6b7280;" title="CENTER"></div>
+          <div class="news-content">
+            <div class="news-meta"><span class="news-src">NYT Business</span><span class="news-bias-lbl" style="color:#6b7280;">CENTER</span></div>
+            <a href="https://www.nytimes.com/2026/04/12/business/peloton-peter-stern.html" target="_blank" class="news-title">Peloton’s Latest Leader Thinks He Can Coach It Back to Health</a>
+          </div>
+        </div><div class="news-row">
+          <div class="news-bias-dot" style="background:#6b7280;" title="CENTER"></div>
+          <div class="news-content">
+            <div class="news-meta"><span class="news-src">MarketWatch</span><span class="news-bias-lbl" style="color:#6b7280;">CENTER</span></div>
+            <a href="https://www.marketwatch.com/story/elon-musk-in-a-post-on-x-says-some-of-his-trump-posts-went-too-far-and-that-he-regrets-them-90e73a6a?mod=mw_rss_realtimeheadlines" target="_blank" class="news-title">Elon Musk in a post on X says some of his Trump posts ‘went too far’ and that he regrets them</a>
+          </div>
+        </div><div class="news-row">
+          <div class="news-bias-dot" style="background:#6b7280;" title="CENTER"></div>
+          <div class="news-content">
+            <div class="news-meta"><span class="news-src">MarketWatch</span><span class="news-bias-lbl" style="color:#6b7280;">CENTER</span></div>
+            <a href="https://www.marketwatch.com/story/bank-of-england-decision-on-thursday-will-be-at-12-02-p-m-local-time-instead-of-12-p-m-due-to-ve-day-two-minutes-of-silence-1f6bed66?mod=mw_rss_realtimeheadlines" target="_blank" class="news-title">Bank of England decision on Thursday will be at 12:02 p.m. local time instead of 12 p.m., due to VE Day’s two minutes of silence</a>
+          </div>
+        </div><div class="news-row">
+          <div class="news-bias-dot" style="background:#6b7280;" title="CENTER"></div>
+          <div class="news-content">
+            <div class="news-meta"><span class="news-src">MarketWatch</span><span class="news-bias-lbl" style="color:#6b7280;">CENTER</span></div>
+            <a href="https://www.marketwatch.com/story/swiss-national-bank-cuts-interest-rates-by-a-half-point-to-0-5-ed1fce78?mod=mw_rss_realtimeheadlines" target="_blank" class="news-title">Swiss National Bank cuts interest rates by a half point to 0.5%</a>
+          </div>
+        </div><div class="news-row">
+          <div class="news-bias-dot" style="background:#6b7280;" title="CENTER"></div>
+          <div class="news-content">
+            <div class="news-meta"><span class="news-src">MarketWatch</span><span class="news-bias-lbl" style="color:#6b7280;">CENTER</span></div>
+            <a href="https://www.marketwatch.com/story/dollar-jumps-0-5-to-0-8890-francs-047c6b4d?mod=mw_rss_realtimeheadlines" target="_blank" class="news-title">Dollar jumps 0.5% to 0.8890 francs</a>
+          </div>
+        </div><div class="news-row">
+          <div class="news-bias-dot" style="background:#6b7280;" title="CENTER"></div>
+          <div class="news-content">
+            <div class="news-meta"><span class="news-src">MarketWatch</span><span class="news-bias-lbl" style="color:#6b7280;">CENTER</span></div>
+            <a href="https://www.marketwatch.com/story/germany-flash-manufacturing-pmi-rises-to-4-month-high-of-43-2-b9e50a64?mod=mw_rss_realtimeheadlines" target="_blank" class="news-title">Germany flash manufacturing PMI rises to 4-month high of 43.2</a>
+          </div>
+        </div><div class="news-row">
+          <div class="news-bias-dot" style="background:#6b7280;" title="CENTER"></div>
+          <div class="news-content">
+            <div class="news-meta"><span class="news-src">MarketWatch</span><span class="news-bias-lbl" style="color:#6b7280;">CENTER</span></div>
+            <a href="https://www.marketwatch.com/story/germany-flash-services-pmi-falls-to-9-month-low-of-49-4-5e5d2763?mod=mw_rss_realtimeheadlines" target="_blank" class="news-title">Germany flash services PMI falls to 9-month low of 49.4</a>
+          </div>
+        </div><div class="news-row">
+          <div class="news-bias-dot" style="background:#6b7280;" title="CENTER"></div>
+          <div class="news-content">
+            <div class="news-meta"><span class="news-src">CNBC</span><span class="news-bias-lbl" style="color:#6b7280;">CENTER</span></div>
+            <a href="https://www.cnbc.com/2026/04/13/markets-trump-strait-of-hormuz-blockade-gold-stocks-dollar.html" target="_blank" class="news-title">From panic to pricing in: Are markets past 'peak fear and sell-off' despite oil price surge?</a>
+          </div>
+        </div><div class="news-row">
+          <div class="news-bias-dot" style="background:#6b7280;" title="CENTER"></div>
+          <div class="news-content">
+            <div class="news-meta"><span class="news-src">CNBC</span><span class="news-bias-lbl" style="color:#6b7280;">CENTER</span></div>
+            <a href="https://www.cnbc.com/2026/04/12/oil-prices-iran-war-strait-hormuz-blockade.html" target="_blank" class="news-title">Oil prices surge above $100 as U.S. Navy to blockade Iran's ports after peace talks fail</a>
+          </div>
+        </div><div class="news-row">
+          <div class="news-bias-dot" style="background:#6b7280;" title="CENTER"></div>
+          <div class="news-content">
+            <div class="news-meta"><span class="news-src">CNBC</span><span class="news-bias-lbl" style="color:#6b7280;">CENTER</span></div>
+            <a href="https://www.cnbc.com/2026/04/12/trump-pope-leo-catholic-church-iran.html" target="_blank" class="news-title">Trump blasts Pope Leo for criticism of U.S. foreign policy</a>
+          </div>
+        </div><div class="news-row">
+          <div class="news-bias-dot" style="background:#6b7280;" title="CENTER"></div>
+          <div class="news-content">
+            <div class="news-meta"><span class="news-src">CNBC</span><span class="news-bias-lbl" style="color:#6b7280;">CENTER</span></div>
+            <a href="https://www.cnbc.com/2026/04/13/eric-swalwell-suspends-campaign-california-governor.html" target="_blank" class="news-title">Eric Swalwell suspends campaign for California governor amid sexual misconduct allegations</a>
+          </div>
+        </div><div class="news-row">
+          <div class="news-bias-dot" style="background:#6b7280;" title="CENTER"></div>
+          <div class="news-content">
+            <div class="news-meta"><span class="news-src">CNBC</span><span class="news-bias-lbl" style="color:#6b7280;">CENTER</span></div>
+            <a href="https://www.cnbc.com/2026/04/12/trump-iran-war-strait-of-hormuz.html" target="_blank" class="news-title">Trump says U.S. will blockade Strait of Hormuz after Iran peace talks fail</a>
+          </div>
+        </div><div class="news-row">
+          <div class="news-bias-dot" style="background:#6b7280;" title="CENTER"></div>
+          <div class="news-content">
+            <div class="news-meta"><span class="news-src">CNBC</span><span class="news-bias-lbl" style="color:#6b7280;">CENTER</span></div>
+            <a href="https://www.cnbc.com/2026/04/13/european-markets-stoxx-600-ftse-dax-iran-latest-hungary-election.html" target="_blank" class="news-title">European stocks set to start the week lower as Iran peace hopes fade</a>
+          </div>
+        </div></div>
+    </div>
   </div>
+</div></div>
+
+<!-- ═══ MORNING BRIEF ═══ -->
+<div id="tab-brief" class="tab"><div class="wrap">
+  <div class="brief-headline">Oil surges past $100 on failed Iran peace talks and Strait of Hormuz blockade threat, compounding an already strained consumer amid sticky inflation and geopolitical escalation.</div>
+  <p class="brief-para">The macro backdrop is deteriorating rapidly as WTI crude surges nearly 8% to $104, driven by the collapse of Iran peace negotiations and President Trump's threat to blockade the Strait of Hormuz. With CPI already elevated at 330.3 and inflation expectations at 2.36% on the 10Y breakeven, a sustained oil price above $100 threatens to reignite the inflation cycle that the Fed has been fighting. The 10Y yield rose to 4.32% on the session, reflecting the market's repricing of the stagflationary impulse from energy costs flowing through to core goods and services.</p><p class="brief-para">Consumer stress is becoming the dominant macro theme. Consumer sentiment sits at a deeply depressed 56.6, and news headlines confirm that record gasoline prices are squeezing household budgets while some companies are already passing through war-related cost increases. With the Fed Funds rate at 3.64% and unemployment at 4.3%, the Fed faces a classic policy dilemma: cutting further to support growth risks stoking inflation, while holding rates steady allows the energy shock to erode real incomes and potentially tip the economy into recession. Retail sales at $738B will need close monitoring for signs of consumer capitulation.</p><p class="brief-para">Markets are showing a tentative risk-off posture but not panic — the VIX at 19.23 is elevated but not extreme, suggesting investors are still in 'pricing in' mode rather than full liquidation. Technology outperformed with Nasdaq up 0.14% as a relative safe haven, while Financials and Healthcare led declines. Gold at $4,750 remains well bid as a geopolitical hedge, and the weak dollar index at 98.96 combined with EUR/USD at 1.17 suggests global capital is diversifying away from USD assets despite the flight-to-quality narrative. The Swiss National Bank's 50bp cut to 0.5% underscores that the global policy divergence is widening.</p>
+  <div class="brief-callout">
+    <div class="brief-callout-item al-r">
+      <div class="brief-callout-lbl">⚠ Biggest Risk Today</div>
+      <div class="brief-callout-val clr-red">A prolonged Strait of Hormuz blockade pushing oil sustainably above $120 would trigger a full stagflationary shock, forcing the Fed to pause or reverse rate cuts while the economy simultaneously decelerates.</div>
+    </div>
+    <div class="brief-callout-item al-a">
+      <div class="brief-callout-lbl">📍 Most Sensitive Sector</div>
+      <div class="brief-callout-val clr-amber">Energy — directly exposed to the Iran conflict escalation with crude above $100, and any resolution or further deterioration of Hormuz tensions will cause outsized moves in energy equities and downstream consumer-facing sectors.</div>
+    </div>
+  </div>
+  <div class="sec-hdr-row"><div><div class="sec-hdr">Macro Watchlist</div><div class="sec-sub">Upcoming catalysts with bull/bear scenarios</div></div></div>
+  <div class="card">
+    <table class="watchlist-tbl">
+      <thead><tr><th>Event</th><th>Why It Matters</th><th>Bull Scenario</th><th>Bear Scenario</th><th>Key Assets</th></tr></thead>
+      <tbody><tr>
+          <td class="wl-event">Strait of Hormuz blockade implementation</td>
+          <td>Trump has explicitly threatened a naval blockade after peace talks collapsed, and the market is pricing escalation but not full implementation.</td>
+          <td class="clr-green">Blockade proves to be negotiating leverage, Iran returns to talks, and oil reverses sharply below $90.</td>
+          <td class="clr-red">Actual naval engagement or Iranian retaliation disrupts 20% of global oil transit, sending crude to $130+ and triggering recession fears.</td>
+          <td class="clr-amber">WTI crude, XLE, USO, defense stocks (LMT, RTX), gold</td>
+        </tr><tr>
+          <td class="wl-event">May CPI / inflation trajectory</td>
+          <td>March CPI already surged due to war-related price pressures, and the $104 crude price has not yet fully passed through to consumer prices.</td>
+          <td class="clr-green">Core CPI ex-energy remains contained, suggesting the inflation impulse is transitory and supply-driven.</td>
+          <td class="clr-red">Broad-based pass-through from energy to core goods and services forces the Fed to signal a hawkish pivot, crushing rate-sensitive assets.</td>
+          <td class="clr-amber">TLT, 2Y Treasuries, TIPS, rate-sensitive equities (XLU, XLRE)</td>
+        </tr><tr>
+          <td class="wl-event">Fed policy response and June FOMC</td>
+          <td>Fed Funds at 3.64% with a positive yield curve (10Y-2Y at +50bp) suggests the market expects easing, but the oil shock may freeze the cutting cycle.</td>
+          <td class="clr-green">Fed signals willingness to look through supply-driven inflation and continues gradual easing to support employment.</td>
+          <td class="clr-red">Fed pauses cuts or adopts hawkish rhetoric, tightening financial conditions into a weakening consumer economy.</td>
+          <td class="clr-amber">Fed funds futures, 2Y Treasury, S&P 500, HYG, LQD</td>
+        </tr><tr>
+          <td class="wl-event">Consumer spending and retail sales data</td>
+          <td>Consumer sentiment at 56.6 is recessionary-level, gasoline prices are at record highs, and spending is described as 'under strain' in multiple reports.</td>
+          <td class="clr-green">Resilient labor market with 4.3% unemployment supports spending through the energy shock, preventing a demand collapse.</td>
+          <td class="clr-red">Consumers retrench sharply, retail sales roll over, and the negative wealth effect from weakening markets amplifies the downturn.</td>
+          <td class="clr-amber">XLY, XRT, Amazon, Walmart, consumer credit spreads</td>
+        </tr><tr>
+          <td class="wl-event">European economic and geopolitical spillover</td>
+          <td>Germany's services PMI fell to a 9-month low of 49.4 (contraction), the SNB cut 50bp, and Europe faces compounded energy and war-related economic pain.</td>
+          <td class="clr-green">ECB and SNB easing combined with fiscal stimulus stabilizes European growth; euro weakness boosts export competitiveness.</td>
+          <td class="clr-red">European recession deepens as energy costs surge, political stress fractures policy coordination, and capital flight accelerates.</td>
+          <td class="clr-amber">EUR/USD, EWG, European banks (SX7E), Bund yields, natural gas (TTF)</td>
+        </tr></tbody>
+    </table>
+  </div>
+</div></div>
+
+<!-- ═══ MACRO REGIME ═══ -->
+<div id="tab-regime" class="tab"><div class="wrap">
+  <div class="regime-grid" style="grid-template-columns:280px 1fr 1fr;">
+    <div class="regime-badge-wrap">
+      <div class="stat-lbl" style="text-align:center;">CURRENT REGIME</div>
+      <div class="regime-label clr-red" style="font-size:16px;">Risk-Off / Inflationary / Growth-Negative</div>
+      <p class="regime-summary">A full-blown stagflationary shock is underway driven by the Iran war and Strait of Hormuz blockade threat, with oil above $100 feeding through to surging CPI while consumer sentiment collapses to recessionary levels. The Fed is trapped with inflation re-accelerating and growth softening simultaneously, leaving no policy relief valve. Risk assets face sustained pressure as rising real rates, energy-driven margin compression, and geopolitical uncertainty create a toxic backdrop for both equities and bonds.</p>
+    </div>
+    <div class="ca-list">
+      <div class="card-hdr"><span class="card-title">Cross-Asset Signal Summary</span></div>
+      <div class="ca-row">
+          <span class="ca-signal">Equities</span>
+          <span class="ca-reading clr-red">Bearish</span>
+          <span class="ca-detail">S&P 500 slipping with broad sector weakness in financials, healthcare, and energy despite tech resilience, reflecting stagflationary rotation pressures.</span>
+        </div><div class="ca-row">
+          <span class="ca-signal">Yields</span>
+          <span class="ca-reading clr-red">Rising</span>
+          <span class="ca-detail">10Y Treasury at 4.32% rising on inflation repricing from the oil shock, tightening financial conditions even as growth deteriorates.</span>
+        </div><div class="ca-row">
+          <span class="ca-signal">Oil</span>
+          <span class="ca-reading clr-green">Bullish</span>
+          <span class="ca-detail">Crude surged 7.8% above $104 with WTI reference at $114 as Strait of Hormuz blockade threat creates the most significant supply disruption risk in decades.</span>
+        </div><div class="ca-row">
+          <span class="ca-signal">Gold</span>
+          <span class="ca-reading clr-amber">Defensive</span>
+          <span class="ca-detail">Gold at $4,750 is off slightly but holding near extraordinary levels, reflecting deeply entrenched geopolitical hedging and inflation fear.</span>
+        </div><div class="ca-row">
+          <span class="ca-signal">USD</span>
+          <span class="ca-reading clr-amber">Firm</span>
+          <span class="ca-detail">DXY at 98.96 gaining modestly as relative safe-haven demand offsets concerns about U.S. stagflation, though remains historically weak.</span>
+        </div><div class="ca-row">
+          <span class="ca-signal">VIX</span>
+          <span class="ca-reading clr-red">Elevated</span>
+          <span class="ca-detail">VIX at 19.23 is above normal but eased slightly, suggesting markets may be past peak panic but remain priced for significant tail risk from escalation.</span>
+        </div>
+    </div>
+    <div class="drivers-list">
+      <div class="card-hdr"><span class="card-title">Top 5 Macro Drivers</span></div>
+      <div class="scroll-box"><div class="driver-card">
+          <div class="driver-title">Iran War & Strait of Hormuz Blockade</div>
+          <div class="driver-row"><span class="driver-lbl">CHANGED</span><span class="driver-val">Peace talks failed and Trump threatened a U.S. Navy blockade of Iran's ports, sending crude oil surging 7.8% above $100/bbl with WTI reference at $114.</span></div>
+          <div class="driver-row"><span class="driver-lbl">IMPACT</span><span class="driver-val">Massive supply shock repricing across energy, inflation expectations, and consumer discretionary sectors as stagflationary risks intensify.</span></div>
+          <div class="driver-row"><span class="driver-lbl">WINNERS</span><span class="driver-val clr-green">Crude oil, natural gas, defense stocks, commodities broadly</span></div>
+          <div class="driver-row"><span class="driver-lbl">LOSERS</span><span class="driver-val clr-red">Airlines, consumer discretionary, transports, emerging markets, bonds</span></div>
+        </div><div class="driver-card">
+          <div class="driver-title">Inflation Surge & Consumer Squeeze</div>
+          <div class="driver-row"><span class="driver-lbl">CHANGED</span><span class="driver-val">U.S. CPI surged in March driven by war-related energy price pass-through, with gasoline prices hitting record jumps and companies citing war as justification for broad price increases.</span></div>
+          <div class="driver-row"><span class="driver-lbl">IMPACT</span><span class="driver-val">10Y yields rose to 4.32% as markets reprice the Fed's ability to cut further, while consumer sentiment at 56.6 signals deep household stress.</span></div>
+          <div class="driver-row"><span class="driver-lbl">WINNERS</span><span class="driver-val clr-green">TIPS, commodities, energy equities, inflation-linked assets</span></div>
+          <div class="driver-row"><span class="driver-lbl">LOSERS</span><span class="driver-val clr-red">Long-duration bonds (TLT), consumer staples, retail, housing</span></div>
+        </div><div class="driver-card">
+          <div class="driver-title">Fed Policy Trapped Between Inflation and Weakness</div>
+          <div class="driver-row"><span class="driver-lbl">CHANGED</span><span class="driver-val">Fed funds at 3.64% with CPI accelerating and unemployment at 4.3% creates a classic stagflationary bind where the Fed cannot ease despite softening growth.</span></div>
+          <div class="driver-row"><span class="driver-lbl">IMPACT</span><span class="driver-val">The yield curve remains modestly positive at +50bps but rising long rates with sticky short rates compress risk premiums and pressure equity multiples.</span></div>
+          <div class="driver-row"><span class="driver-lbl">WINNERS</span><span class="driver-val clr-green">Short-duration credit, money market funds, floating-rate debt</span></div>
+          <div class="driver-row"><span class="driver-lbl">LOSERS</span><span class="driver-val clr-red">Growth/long-duration equities, REITs, leveraged borrowers, HYG</span></div>
+        </div><div class="driver-card">
+          <div class="driver-title">Consumer Spending Under Strain</div>
+          <div class="driver-row"><span class="driver-lbl">CHANGED</span><span class="driver-val">Record gasoline price jump and war-driven inflation are eroding real purchasing power, with consumer sentiment at recessionary levels of 56.6 and spending described as 'under strain.'</span></div>
+          <div class="driver-row"><span class="driver-lbl">IMPACT</span><span class="driver-val">Financials fell 1.09% and healthcare dropped 1.35% as markets price deteriorating consumer fundamentals and potential credit stress ahead.</span></div>
+          <div class="driver-row"><span class="driver-lbl">WINNERS</span><span class="driver-val clr-green">Discount retailers, utilities (defensive), gold</span></div>
+          <div class="driver-row"><span class="driver-lbl">LOSERS</span><span class="driver-val clr-red">Financials, consumer discretionary, small caps (Russell 2000)</span></div>
+        </div><div class="driver-card">
+          <div class="driver-title">Global Contagion & European Weakness</div>
+          <div class="driver-row"><span class="driver-lbl">CHANGED</span><span class="driver-val">European political stress compounds with war fallout; German services PMI fell to 9-month low of 49.4 entering contraction, while Swiss National Bank cut rates 50bps to 0.5%.</span></div>
+          <div class="driver-row"><span class="driver-lbl">IMPACT</span><span class="driver-val">USD firmed modestly to 98.96 on relative safe-haven flows, but EUR/USD at 1.17 and weak European data suggest global growth synchronization to the downside.</span></div>
+          <div class="driver-row"><span class="driver-lbl">WINNERS</span><span class="driver-val clr-green">USD, U.S. Treasuries (relative), Swiss franc (post-cut repositioning)</span></div>
+          <div class="driver-row"><span class="driver-lbl">LOSERS</span><span class="driver-val clr-red">European equities, EUR, GBP, export-sensitive industrials</span></div>
+        </div></div>
+    </div>
+  </div>
+</div></div>
+
+<!-- ═══ MARKET IMPACT ═══ -->
+<div id="tab-impact" class="tab"><div class="wrap">
+  <div class="impact-grid"><div class="impact-card">
+          <div class="impact-hdr">
+            <span class="impact-title">Oil Surges Past $100 on Iran Blockade Threat</span>
+            <div style="display:flex;gap:6px;align-items:center;">
+              <span class="badge badge-red">BEARISH</span>
+              <span class="badge badge-muted">NEAR-TERM</span>
+              <span class="badge badge-amber">SCORE 9/10</span>
+            </div>
+          </div>
+          <div class="impact-body">
+            <div class="impact-headline">"Oil prices surge above $100 as U.S. Navy to blockade Iran's ports after peace talks fail"</div>
+            <p class="impact-why">Trump's threat to blockade the Strait of Hormuz — through which ~20% of global oil flows — has sent crude up nearly 8% in a single session, pushing WTI above $104. This represents a severe supply shock that will ripple through inflation, consumer spending, and global growth expectations.</p>
+            <div class="tag-row"><span class="tag-lbl">SECTORS</span><span class="tag clr-green">Energy: Bullish</span><span class="tag clr-red">Airlines: Bearish</span><span class="tag clr-red">Consumer Discretionary: Bearish</span><span class="tag clr-red">Industrials: Bearish</span></div>
+            <div class="tag-row"><span class="tag-lbl">ASSETS</span><span class="tag clr-green">Crude Oil: Bullish</span><span class="tag clr-green">Natural Gas: Bullish</span><span class="tag clr-red">S&P 500: Bearish</span><span class="tag clr-green">Gold: Bullish</span></div>
+          </div>
+        </div><div class="impact-card">
+          <div class="impact-hdr">
+            <span class="impact-title">Inflation Re-Acceleration Threatens Fed Rate Path</span>
+            <div style="display:flex;gap:6px;align-items:center;">
+              <span class="badge badge-red">BEARISH</span>
+              <span class="badge badge-muted">NEAR-TERM</span>
+              <span class="badge badge-amber">SCORE 8/10</span>
+            </div>
+          </div>
+          <div class="impact-body">
+            <div class="impact-headline">"U.S. Inflation Surged in March as Iran War Pushed Up Prices"</div>
+            <p class="impact-why">With CPI already elevated and gasoline prices hitting record jumps, the Fed faces an impossible dilemma: cut rates to support a weakening economy or hold firm against resurgent inflation. The 10Y yield rising to 4.32% signals markets are repricing for higher-for-longer rates even as growth deteriorates.</p>
+            <div class="tag-row"><span class="tag-lbl">SECTORS</span><span class="tag clr-red">Real Estate: Bearish</span><span class="tag clr-red">Financials: Bearish</span><span class="tag clr-red">Utilities: Bearish</span></div>
+            <div class="tag-row"><span class="tag-lbl">ASSETS</span><span class="tag clr-red">TLT: Bearish</span><span class="tag clr-red">10Y Treasury: Bearish</span><span class="tag clr-green">Gold: Bullish</span><span class="tag clr-green">10Y Breakeven: Bullish</span></div>
+          </div>
+        </div><div class="impact-card">
+          <div class="impact-hdr">
+            <span class="impact-title">Consumer Spending Under Severe Pressure</span>
+            <div style="display:flex;gap:6px;align-items:center;">
+              <span class="badge badge-red">BEARISH</span>
+              <span class="badge badge-muted">NEAR-TERM</span>
+              <span class="badge badge-amber">SCORE 7/10</span>
+            </div>
+          </div>
+          <div class="impact-body">
+            <div class="impact-headline">"A Record Jump in U.S. Gasoline Prices Is Squeezing Consumers"</div>
+            <p class="impact-why">Consumer sentiment at 56.6 is deeply depressed, and surging energy costs act as a regressive tax that disproportionately hits lower-income households. With retail sales already showing strain, the risk of a consumer-led recession is rising materially.</p>
+            <div class="tag-row"><span class="tag-lbl">SECTORS</span><span class="tag clr-red">Consumer Discretionary: Bearish</span><span class="tag clr-red">Retail: Bearish</span><span class="tag clr-amber">Consumer Staples: Neutral</span></div>
+            <div class="tag-row"><span class="tag-lbl">ASSETS</span><span class="tag clr-red">Russell 2000: Bearish</span><span class="tag clr-red">HYG: Bearish</span><span class="tag clr-green">USD Index: Bullish</span></div>
+          </div>
+        </div><div class="impact-card">
+          <div class="impact-hdr">
+            <span class="impact-title">Swiss National Bank Slashes Rates by 50bps</span>
+            <div style="display:flex;gap:6px;align-items:center;">
+              <span class="badge badge-red">BEARISH</span>
+              <span class="badge badge-muted">NEAR-TERM</span>
+              <span class="badge badge-amber">SCORE 6/10</span>
+            </div>
+          </div>
+          <div class="impact-body">
+            <div class="impact-headline">"Swiss National Bank cuts interest rates by a half point to 0.5%"</div>
+            <p class="impact-why">The SNB's aggressive 50bp cut signals deep concern about global growth spillovers from the Iran conflict and Europe's economic deterioration. The Swiss franc's sharp drop against the dollar (USD/CHF +0.5%) underscores diverging monetary policy paths as the Fed remains constrained by inflation.</p>
+            <div class="tag-row"><span class="tag-lbl">SECTORS</span><span class="tag clr-red">Financials: Bearish</span></div>
+            <div class="tag-row"><span class="tag-lbl">ASSETS</span><span class="tag clr-green">USD Index: Bullish</span><span class="tag clr-red">EUR/USD: Bearish</span><span class="tag clr-green">Gold: Bullish</span></div>
+          </div>
+        </div><div class="impact-card">
+          <div class="impact-hdr">
+            <span class="impact-title">Tech Outperforms as Defensive Growth Play</span>
+            <div style="display:flex;gap:6px;align-items:center;">
+              <span class="badge badge-amber">NEUTRAL</span>
+              <span class="badge badge-muted">NEAR-TERM</span>
+              <span class="badge badge-amber">SCORE 5/10</span>
+            </div>
+          </div>
+          <div class="impact-body">
+            <div class="impact-headline">"From panic to pricing in: Are markets past 'peak fear and sell-off' despite oil price surge?"</div>
+            <p class="impact-why">Nasdaq 100 gained 0.14% while the broader market declined, with the Technology ETF up 0.39% — reflecting a flight to quality within equities toward capital-light, high-margin tech names less exposed to energy cost inflation. This rotation could persist as long as stagflation fears dominate.</p>
+            <div class="tag-row"><span class="tag-lbl">SECTORS</span><span class="tag clr-green">Technology: Bullish</span><span class="tag clr-green">Energy: Bullish</span><span class="tag clr-red">Healthcare: Bearish</span></div>
+            <div class="tag-row"><span class="tag-lbl">ASSETS</span><span class="tag clr-green">Nasdaq 100: Bullish</span><span class="tag clr-red">Dow Jones: Bearish</span><span class="tag clr-green">VIX: Bullish</span></div>
+          </div>
+        </div><div class="impact-card">
+          <div class="impact-hdr">
+            <span class="impact-title">China Positioned to Gain From Middle East Conflict</span>
+            <div style="display:flex;gap:6px;align-items:center;">
+              <span class="badge badge-amber">NEUTRAL</span>
+              <span class="badge badge-muted">STRUCTURAL</span>
+              <span class="badge badge-amber">SCORE 6/10</span>
+            </div>
+          </div>
+          <div class="impact-body">
+            <div class="impact-headline">"China's Electrostate Is Poised to Win From War in the Middle East"</div>
+            <p class="impact-why">As oil price shocks accelerate the global energy transition, China's dominance in EVs, batteries, and solar manufacturing gives it a structural competitive advantage. This dynamic could permanently shift global trade flows and weaken Western energy security.</p>
+            <div class="tag-row"><span class="tag-lbl">SECTORS</span><span class="tag clr-green">Clean Energy: Bullish</span><span class="tag clr-red">Autos: Bearish</span><span class="tag clr-green">Traditional Energy: Bullish</span></div>
+            <div class="tag-row"><span class="tag-lbl">ASSETS</span><span class="tag clr-green">Copper: Bullish</span><span class="tag clr-red">USD/CNY: Bearish</span><span class="tag clr-green">Crude Oil: Bullish</span></div>
+          </div>
+        </div></div>
+</div></div>
+
+<!-- ═══ GEO RISK ═══ -->
+<div id="tab-geo" class="tab"><div class="wrap">
+  <div class="card">
+    <div class="card-hdr"><span class="card-title">Global Market Risk Monitor</span><span class="badge badge-red">AGENT 3</span></div>
+    <table class="geo-tbl">
+      <thead><tr><th>Risk Event</th><th>Region</th><th>Risk Level</th><th>Sectors Impacted</th><th></th></tr></thead>
+      <tbody><tr class="geo-tr" onclick="toggleGeo(0)">
+          <td><span class="geo-title">U.S. Naval Blockade of Strait of Hormuz After Iran Peace Talks Collapse</span></td>
+          <td class="geo-region">Middle East / Persian Gulf</td>
+          <td><span class="badge badge-red">HIGH</span></td>
+          <td class="geo-sectors">Energy (bullish), Defense/Aerospace (bullish), Airlines/Transport (bearish), Consumer Discretionary (bearish), Financials (bearish), Utilities (bearish)</td>
+          <td class="geo-expand">▼</td>
+        </tr>
+        <tr id="geo-detail-0" class="geo-detail-row" style="display:none;">
+          <td colspan="5">
+            <div class="geo-detail">
+              <div class="geo-detail-grid">
+                <div><span class="dl">TRIGGER</span><p>Trump announced a U.S. naval blockade of the Strait of Hormuz after peace talks with Iran failed, escalating the ongoing Iran conflict and threatening the world's most critical oil chokepoint.</p></div>
+                <div><span class="dl">MARKET EXPOSURE</span><p>Crude oil has surged above $104/bbl (+7.83%) with WTI reference at $114, directly impacting global energy supply chains and inflation. The blockade threatens ~20% of global oil transit, risking further price spikes and potential military confrontation with Iran or its proxies.</p></div>
+                <div><span class="dl">ASSET IMPACT</span><p>WTI Crude (sharply bullish), Natural Gas (bullish), Gold (bullish), USD (mildly bullish), US Treasuries (bullish on flight-to-safety), S&P 500 (bearish), Emerging Market FX (bearish)</p></div>
+                <div><span class="dl">WHAT TO WATCH</span><p>Any Iranian military response or proxy attacks on shipping in the Gulf; whether allies (UK, France) join the blockade or push for diplomatic off-ramp; Congressional authorization debates for expanded military action.</p></div>
+              </div>
+            </div>
+          </td>
+        </tr><tr class="geo-tr" onclick="toggleGeo(1)">
+          <td><span class="geo-title">U.S. Inflation Surge Driven by War-Related Energy Price Shock</span></td>
+          <td class="geo-region">United States</td>
+          <td><span class="badge badge-red">HIGH</span></td>
+          <td class="geo-sectors">Consumer Staples (mildly bullish), Real Estate (bearish), Financials (bearish), Healthcare (bearish), Consumer Discretionary (bearish), TIPS/Inflation-linked bonds (bullish)</td>
+          <td class="geo-expand">▼</td>
+        </tr>
+        <tr id="geo-detail-1" class="geo-detail-row" style="display:none;">
+          <td colspan="5">
+            <div class="geo-detail">
+              <div class="geo-detail-grid">
+                <div><span class="dl">TRIGGER</span><p>U.S. inflation surged in March as the Iran war pushed gasoline prices to record highs, with CPI accelerating while consumer sentiment sits at a depressed 56.6 and retail spending shows strain.</p></div>
+                <div><span class="dl">MARKET EXPOSURE</span><p>With CPI at 330.293 and the Fed Funds rate at 3.64%, the Fed faces a stagflationary dilemma—rising prices from supply shocks alongside weakening consumer demand. The 10Y yield rising to 4.32% reflects inflation expectations hardening, squeezing rate-sensitive sectors.</p></div>
+                <div><span class="dl">ASSET IMPACT</span><p>10Y Treasury yield (bearish/rising), TLT (bearish), HYG high-yield bonds (bearish), Gold (bullish), USD (neutral-to-bullish), S&P 500 (bearish), Mortgage REITs (bearish)</p></div>
+                <div><span class="dl">WHAT TO WATCH</span><p>Next Fed meeting guidance on whether they prioritize inflation or growth; consumer spending data for signs of demand destruction; whether gasoline prices breach further psychological thresholds.</p></div>
+              </div>
+            </div>
+          </td>
+        </tr><tr class="geo-tr" onclick="toggleGeo(2)">
+          <td><span class="geo-title">European Economic Deterioration Amid War Spillover and Political Stress</span></td>
+          <td class="geo-region">Europe</td>
+          <td><span class="badge badge-red">HIGH</span></td>
+          <td class="geo-sectors">European Banks (bearish), European Industrials (bearish), European Energy importers (bearish), Swiss exporters (bullish from weaker CHF), European Defense (bullish)</td>
+          <td class="geo-expand">▼</td>
+        </tr>
+        <tr id="geo-detail-2" class="geo-detail-row" style="display:none;">
+          <td colspan="5">
+            <div class="geo-detail">
+              <div class="geo-detail-grid">
+                <div><span class="dl">TRIGGER</span><p>Europe faces compounding economic pain from the Middle East war fallout, with German services PMI dropping to a 9-month low of 49.4 (contraction territory) while the Swiss National Bank cut rates aggressively by 50bps to 0.5%.</p></div>
+                <div><span class="dl">MARKET EXPOSURE</span><p>European economies are acutely exposed to energy price shocks given residual dependence on imported hydrocarbons. The SNB's emergency-style cut signals recession fears, and EUR weakness could accelerate capital flight from European risk assets.</p></div>
+                <div><span class="dl">ASSET IMPACT</span><p>EUR/USD (bearish pressure), European equities (bearish), German Bunds (bullish/yields falling), CHF (bearish after rate cut), European high-yield credit (bearish), Gold in EUR terms (bullish)</p></div>
+                <div><span class="dl">WHAT TO WATCH</span><p>Bank of England rate decision Thursday for signals on UK policy divergence; whether ECB accelerates rate cuts; political stability in France and Germany as economic pain intensifies.</p></div>
+              </div>
+            </div>
+          </td>
+        </tr><tr class="geo-tr" onclick="toggleGeo(3)">
+          <td><span class="geo-title">China's Strategic Advantage from Middle East Energy Disruption</span></td>
+          <td class="geo-region">China / Indo-Pacific</td>
+          <td><span class="badge badge-amber">MEDIUM</span></td>
+          <td class="geo-sectors">Chinese EV/Battery manufacturers (bullish), Global legacy automakers (bearish), Chinese solar/wind (bullish), U.S. shale producers (bullish), Rare earth miners (bullish)</td>
+          <td class="geo-expand">▼</td>
+        </tr>
+        <tr id="geo-detail-3" class="geo-detail-row" style="display:none;">
+          <td colspan="5">
+            <div class="geo-detail">
+              <div class="geo-detail-grid">
+                <div><span class="dl">TRIGGER</span><p>China's electric vehicle and clean energy dominance positions it to benefit strategically as the Iran war disrupts fossil fuel markets, potentially accelerating global EV adoption and shifting energy geopolitics in Beijing's favor.</p></div>
+                <div><span class="dl">MARKET EXPOSURE</span><p>With USD/CNY stable at 6.83, China's manufacturing export machine benefits from competitors facing higher energy input costs. Chinese EV and battery manufacturers could gain market share as oil prices make ICE vehicles more expensive to operate globally.</p></div>
+                <div><span class="dl">ASSET IMPACT</span><p>Chinese tech/EV stocks (bullish), Copper (bullish long-term), Lithium (bullish), USD/CNY (stable), Hang Seng (mildly bullish), Traditional auto stocks (bearish)</p></div>
+                <div><span class="dl">WHAT TO WATCH</span><p>Whether China brokers a separate energy deal with Iran circumventing U.S. blockade; U.S. trade policy response including potential new tariffs on Chinese EVs; secondary sanctions enforcement on Chinese entities trading with Iran.</p></div>
+              </div>
+            </div>
+          </td>
+        </tr><tr class="geo-tr" onclick="toggleGeo(4)">
+          <td><span class="geo-title">Cryptocurrency Sell-Off Amid Risk-Off Rotation and Liquidity Tightening</span></td>
+          <td class="geo-region">Global</td>
+          <td><span class="badge badge-amber">MEDIUM</span></td>
+          <td class="geo-sectors">Crypto exchanges/miners (bearish), Blockchain/DeFi (bearish), Gold miners (bullish), Traditional safe-haven assets (bullish)</td>
+          <td class="geo-expand">▼</td>
+        </tr>
+        <tr id="geo-detail-4" class="geo-detail-row" style="display:none;">
+          <td colspan="5">
+            <div class="geo-detail">
+              <div class="geo-detail-grid">
+                <div><span class="dl">TRIGGER</span><p>Bitcoin fell 2.8% to ~$71,000 and Ethereum dropped nearly 4% as the geopolitical risk-off environment and rising real yields drove investors away from speculative assets toward traditional safe havens.</p></div>
+                <div><span class="dl">MARKET EXPOSURE</span><p>With the 10Y-2Y spread at +0.5% (un-inverted) and M2 money supply at $22.67T, liquidity conditions are tightening at the margin. Crypto's correlation with risk assets during geopolitical stress events undermines its safe-haven narrative, favoring gold ($4,750) instead.</p></div>
+                <div><span class="dl">ASSET IMPACT</span><p>Bitcoin (bearish), Ethereum (bearish), Solana (bearish), Gold (bullish), VIX (bullish), Coinbase/MicroStrategy equities (bearish)</p></div>
+                <div><span class="dl">WHAT TO WATCH</span><p>Whether Bitcoin holds the $70,000 support level or breaks lower toward $65,000; correlation patterns between crypto and equity risk during further escalation; institutional flow data showing rotation from digital to physical safe havens.</p></div>
+              </div>
+            </div>
+          </td>
+        </tr></tbody>
+    </table>
+  </div>
+</div></div>
+
+<!-- ═══ CENTRAL BANKS ═══ -->
+<div id="tab-cb" class="tab"><div class="wrap">
+  <div class="cb-grid"><div class="cb-card">
+          <div class="cb-hdr">
+            <span class="cb-name">Federal Reserve</span>
+            <span class="cb-stance clr-red">Hawkish Hold</span>
+          </div>
+          <div class="cb-body">
+            <div class="cb-section"><span class="cb-lbl">LATEST SIGNALS</span><p>CPI surged in March driven by Iran War-related energy price spikes, with WTI crude above $114 and gasoline prices hitting record highs, keeping inflation firmly above target. The Fed faces a stagflationary dilemma with unemployment at 4.3% and consumer sentiment collapsing to 56.6 while supply-side inflation pressures intensify.</p></div>
+            <div class="cb-section"><span class="cb-lbl">MARKET INTERPRETATION</span><p>Markets are pricing the 2Y Treasury at 3.59% well below the 3.64% Fed Funds rate, signaling expectations for eventual cuts, but the 10Y at 4.32% reflects persistent inflation fears. The positive 10Y-2Y spread of 50bps suggests markets see a prolonged period of elevated long-end rates driven by geopolitical risk premiums and inflation uncertainty.</p></div>
+            <div class="cb-impacts">
+              <div><span class="cb-lbl">YIELDS</span><p>The 10Y yield rising to 4.32% reflects the market repricing inflation expectations higher amid the Iran conflict, with breakevens at 2.36% likely understating near-term price pressures.</p></div>
+              <div><span class="cb-lbl">EQUITIES</span><p>Equities are showing resilience near highs but breadth is narrowing with financials, energy, and healthcare underperforming, suggesting markets are rotating defensively while tech masks underlying stress.</p></div>
+              <div><span class="cb-lbl">USD</span><p>The dollar index at 98.96 remains relatively soft despite geopolitical turmoil, reflecting concerns that war-driven stagflation could constrain Fed tightening options.</p></div>
+            </div>
+            <div class="cb-risk"><span class="cb-lbl">KEY RISK</span> A prolonged Strait of Hormuz blockade could push oil well above $120, triggering a full stagflationary shock that forces the Fed to choose between fighting inflation and preventing recession.</div>
+          </div>
+        </div><div class="cb-card">
+          <div class="cb-hdr">
+            <span class="cb-name">European Central Bank</span>
+            <span class="cb-stance clr-green">Dovish Hold</span>
+          </div>
+          <div class="cb-body">
+            <div class="cb-section"><span class="cb-lbl">LATEST SIGNALS</span><p>Europe faces compounding economic pain from the Iran war with Germany's services PMI falling to a 9-month low of 49.4, signaling contraction in the eurozone's largest economy. Political stress and energy dependence vulnerabilities are intensifying as oil surges above $100, threatening to tip the continent into recession.</p></div>
+            <div class="cb-section"><span class="cb-lbl">MARKET INTERPRETATION</span><p>EUR/USD at 1.17 suggests markets expect ECB policy divergence from the Fed, with Europe's growth outlook deteriorating faster than the US. The Swiss National Bank's aggressive 50bp cut to 0.5% signals regional central banks are pivoting hard to support growth, pressuring the ECB to follow suit.</p></div>
+            <div class="cb-impacts">
+              <div><span class="cb-lbl">YIELDS</span><p>European yields are likely to compress relative to US Treasuries as recession fears dominate inflation concerns, widening the transatlantic spread.</p></div>
+              <div><span class="cb-lbl">EQUITIES</span><p>European stocks opened lower as fading Iran peace hopes directly threaten the continent's energy-intensive industrial base and consumer spending power.</p></div>
+              <div><span class="cb-lbl">USD</span><p>The euro's strength at 1.17 may be unsustainable if the ECB pivots more aggressively dovish, though safe-haven flows from the conflict could provide temporary support.</p></div>
+            </div>
+            <div class="cb-risk"><span class="cb-lbl">KEY RISK</span> A sustained oil price shock above $100 could trigger a European recession while simultaneously keeping headline inflation elevated, creating an impossible policy trilemma for the ECB.</div>
+          </div>
+        </div><div class="cb-card">
+          <div class="cb-hdr">
+            <span class="cb-name">Bank of Japan</span>
+            <span class="cb-stance clr-amber">Cautious Tightening</span>
+          </div>
+          <div class="cb-body">
+            <div class="cb-section"><span class="cb-lbl">LATEST SIGNALS</span><p>USD/JPY at 159.66 indicates the yen remains under severe pressure, which alongside surging energy import costs from the Iran conflict dramatically worsens Japan's terms of trade. The BOJ faces mounting pressure to normalize policy to defend the currency, but doing so risks destabilizing JGB markets and an already fragile domestic recovery.</p></div>
+            <div class="cb-section"><span class="cb-lbl">MARKET INTERPRETATION</span><p>Markets expect the BOJ to remain cautious given the extreme yen weakness is now compounded by a geopolitical energy shock that Japan, as a major oil importer, is acutely exposed to. The yen's continued depreciation despite global risk-off sentiment signals deep structural concerns about Japan's policy credibility.</p></div>
+            <div class="cb-impacts">
+              <div><span class="cb-lbl">YIELDS</span><p>JGB yields face upward pressure as markets price in eventual BOJ normalization, but the pace will be glacial given the risk of disrupting Japan's massive government debt market.</p></div>
+              <div><span class="cb-lbl">EQUITIES</span><p>Japanese exporters may temporarily benefit from yen weakness, but surging energy input costs and slowing global demand from the conflict will increasingly offset currency tailwinds.</p></div>
+              <div><span class="cb-lbl">USD</span><p>The yen's persistent weakness near 160 keeps intervention risk elevated and puts upward pressure on the dollar index through the JPY channel.</p></div>
+            </div>
+            <div class="cb-risk"><span class="cb-lbl">KEY RISK</span> A USD/JPY breach above 160 amid oil-driven inflation could force emergency BOJ intervention or an abrupt rate hike that destabilizes global bond markets.</div>
+          </div>
+        </div><div class="cb-card">
+          <div class="cb-hdr">
+            <span class="cb-name">Bank of England</span>
+            <span class="cb-stance clr-green">Dovish Hold</span>
+          </div>
+          <div class="cb-body">
+            <div class="cb-section"><span class="cb-lbl">LATEST SIGNALS</span><p>The BOE's upcoming decision is being delivered at 12:02 p.m. due to VE Day silence, with the UK economy facing the dual headwinds of surging energy costs from the Iran conflict and slowing European demand. The 30Y mortgage rate at 6.37% continues to squeeze UK households, with consumer spending under increasing strain.</p></div>
+            <div class="cb-section"><span class="cb-lbl">MARKET INTERPRETATION</span><p>GBP/USD declining to 1.34 suggests markets are positioning for a more dovish BOE stance as growth concerns mount amid the geopolitical crisis. Markets expect the BOE to prioritize economic support over inflation fighting given the supply-side nature of the energy price shock.</p></div>
+            <div class="cb-impacts">
+              <div><span class="cb-lbl">YIELDS</span><p>UK gilt yields are likely to fall as the BOE signals readiness to cut rates, compressing the spread with US Treasuries.</p></div>
+              <div><span class="cb-lbl">EQUITIES</span><p>UK equities face headwinds from weakening consumer sentiment and rising input costs, though energy-heavy FTSE 100 constituents may partially offset broader declines.</p></div>
+              <div><span class="cb-lbl">USD</span><p>Sterling weakness against the dollar at 1.34 reflects BOE-Fed policy divergence expectations, with further GBP downside likely if the BOE signals imminent cuts.</p></div>
+            </div>
+            <div class="cb-risk"><span class="cb-lbl">KEY RISK</span> The UK's exposure to both European economic slowdown and direct energy price inflation creates a stagflationary trap that could force the BOE into policy error regardless of direction.</div>
+          </div>
+        </div><div class="cb-card">
+          <div class="cb-hdr">
+            <span class="cb-name">PBOC</span>
+            <span class="cb-stance clr-green">Measured Easing</span>
+          </div>
+          <div class="cb-body">
+            <div class="cb-section"><span class="cb-lbl">LATEST SIGNALS</span><p>China stands to benefit strategically from the Middle East conflict as its electric vehicle and clean energy industries gain competitiveness while it secures discounted Russian and Iranian oil outside Western sanctions. USD/CNY at 6.83 reflects a relatively stable yuan as the PBOC maintains managed depreciation to support exports amid global demand uncertainty.</p></div>
+            <div class="cb-section"><span class="cb-lbl">MARKET INTERPRETATION</span><p>Markets view China as a relative beneficiary of the Iran conflict given its energy diversification and EV leadership, but the PBOC is expected to continue measured easing to support domestic demand. The stable yuan suggests the PBOC is comfortable with current FX levels and focused on targeted credit easing rather than broad stimulus.</p></div>
+            <div class="cb-impacts">
+              <div><span class="cb-lbl">YIELDS</span><p>Chinese government bond yields are likely to drift lower as the PBOC maintains accommodative liquidity conditions to cushion the domestic economy from global spillovers.</p></div>
+              <div><span class="cb-lbl">EQUITIES</span><p>China's 'Electrostate' positioning as a strategic winner from Middle East instability could drive selective outperformance in clean energy and EV sectors.</p></div>
+              <div><span class="cb-lbl">USD</span><p>The yuan's relative stability at 6.83 reflects PBOC management and China's improved terms of trade from discounted energy imports, limiting USD/CNY upside.</p></div>
+            </div>
+            <div class="cb-risk"><span class="cb-lbl">KEY RISK</span> A broader global recession triggered by sustained oil prices above $100 would overwhelm China's structural advantages and expose persistent domestic property sector and consumption weaknesses.</div>
+          </div>
+        </div></div>
+</div></div>
+
+<!-- ═══ SECTORS ═══ -->
+<div id="tab-sectors" class="tab"><div class="wrap">
+  <div class="card" style="margin-bottom:20px;">
+    <div class="card-hdr"><span class="card-title">Sector ETF Performance Today (% Change)</span><span class="badge badge-blue">LIVE</span></div>
+    <div class="card-body"><canvas id="sector-chart" height="70"></canvas></div>
+  </div>
+  <div class="sec-grid"><div class="sec-card">
+          <div class="sec-hdr">
+            <span class="sec-name">Technology</span>
+            <span class="badge badge-green">Cautiously Bullish</span>
+          </div>
+          <div class="sec-body">
+            <div class="sec-col">
+              <span class="sec-lbl clr-green">▲ TAILWINDS</span>
+              <ul class="sec-list"><li>Nasdaq 100 outperforming broader indices with +0.14% gain amid risk-off environment</li><li>Positive 10Y-2Y spread (0.5%) and moderating 2Y yield (3.59%) signal easing monetary conditions ahead</li><li>Relative safe-haven status as secular AI/cloud growth themes persist despite geopolitical turmoil</li></ul>
+            </div>
+            <div class="sec-col">
+              <span class="sec-lbl clr-red">▼ HEADWINDS</span>
+              <ul class="sec-list"><li>Rising 10Y Treasury yield (4.32%) increases discount rate pressure on long-duration growth stocks</li><li>Consumer sentiment at deeply depressed 56.6 threatens downstream enterprise and consumer tech spending</li></ul>
+            </div>
+          </div>
+          <div class="sec-footer">
+            <div><span class="sec-lbl">MACRO SENSITIVITY</span> Rate-sensitive / Growth-dependent</div>
+            <div><span class="sec-lbl">KEY CATALYST</span> Oil surge above $100 from Iran blockade threat could trigger stagflationary fears, but tech's low energy intensity provides relative insulation versus cyclicals.</div>
+            <div><span class="sec-lbl">WATCH</span> <span class="clr-amber">NVDA, MSFT, AAPL, GOOGL</span></div>
+          </div>
+        </div><div class="sec-card">
+          <div class="sec-hdr">
+            <span class="sec-name">Financials</span>
+            <span class="badge badge-red">Bearish</span>
+          </div>
+          <div class="sec-body">
+            <div class="sec-col">
+              <span class="sec-lbl clr-green">▲ TAILWINDS</span>
+              <ul class="sec-list"><li>Positive yield curve (10Y-2Y spread at 0.5%) supports net interest margin expansion</li><li>Fed Funds at 3.64% still provides healthy lending rate environment</li></ul>
+            </div>
+            <div class="sec-col">
+              <span class="sec-lbl clr-red">▼ HEADWINDS</span>
+              <ul class="sec-list"><li>Sector down -1.09%, worst performer among all sectors, reflecting credit risk fears from geopolitical escalation</li><li>Oil price shock and surging inflation threaten consumer credit quality with unemployment already at 4.3%</li><li>HYG (-0.40%) and LQD (-0.26%) weakness signals credit spread widening and rising default risk expectations</li></ul>
+            </div>
+          </div>
+          <div class="sec-footer">
+            <div><span class="sec-lbl">MACRO SENSITIVITY</span> Credit cycle / Yield curve dependent</div>
+            <div><span class="sec-lbl">KEY CATALYST</span> Iran war escalation and Strait of Hormuz blockade threat is driving credit risk repricing as markets fear stagflationary recession hitting loan books.</div>
+            <div><span class="sec-lbl">WATCH</span> <span class="clr-amber">JPM, BAC, GS, MS</span></div>
+          </div>
+        </div><div class="sec-card">
+          <div class="sec-hdr">
+            <span class="sec-name">Energy</span>
+            <span class="badge badge-green">Bullish</span>
+          </div>
+          <div class="sec-body">
+            <div class="sec-col">
+              <span class="sec-lbl clr-green">▲ TAILWINDS</span>
+              <ul class="sec-list"><li>Crude oil surging +7.83% to $104/bbl with WTI reference at $114 on Strait of Hormuz blockade threat</li><li>Failed Iran peace talks and U.S. Navy blockade announcement create sustained supply disruption premium</li><li>Upstream producers benefit massively from oil well above breakeven levels with strong free cash flow generation</li></ul>
+            </div>
+            <div class="sec-col">
+              <span class="sec-lbl clr-red">▼ HEADWINDS</span>
+              <ul class="sec-list"><li>Energy ETF paradoxically down -0.68%, suggesting market fears demand destruction from recession risk</li><li>Political risk of windfall taxes or strategic petroleum reserve releases if prices remain elevated</li></ul>
+            </div>
+          </div>
+          <div class="sec-footer">
+            <div><span class="sec-lbl">MACRO SENSITIVITY</span> Commodity price driven / Geopolitically sensitive</div>
+            <div><span class="sec-lbl">KEY CATALYST</span> Trump's announcement of a U.S. naval blockade of Iran's ports after peace talks collapsed is the most significant oil supply disruption catalyst since the 2022 Russia-Ukraine crisis.</div>
+            <div><span class="sec-lbl">WATCH</span> <span class="clr-amber">XOM, CVX, COP, SLB</span></div>
+          </div>
+        </div><div class="sec-card">
+          <div class="sec-hdr">
+            <span class="sec-name">Healthcare</span>
+            <span class="badge badge-red">Bearish</span>
+          </div>
+          <div class="sec-body">
+            <div class="sec-col">
+              <span class="sec-lbl clr-green">▲ TAILWINDS</span>
+              <ul class="sec-list"><li>Traditionally defensive sector should attract capital during geopolitical crises</li><li>Aging demographics and inelastic healthcare demand provide structural floor</li></ul>
+            </div>
+            <div class="sec-col">
+              <span class="sec-lbl clr-red">▼ HEADWINDS</span>
+              <ul class="sec-list"><li>Worst-performing sector at -1.35%, unusual for a defensive sector during risk-off periods suggesting sector-specific headwinds</li><li>Surging inflation (CPI 330.293) raises input costs for hospitals, devices, and pharmaceutical supply chains</li><li>Consumer spending strain and depressed sentiment (56.6) may reduce elective procedure volumes</li></ul>
+            </div>
+          </div>
+          <div class="sec-footer">
+            <div><span class="sec-lbl">MACRO SENSITIVITY</span> Defensive / Regulatory-sensitive</div>
+            <div><span class="sec-lbl">KEY CATALYST</span> Healthcare's unusual underperformance during a risk-off session suggests potential policy overhang or margin compression fears from war-driven input cost inflation.</div>
+            <div><span class="sec-lbl">WATCH</span> <span class="clr-amber">UNH, JNJ, LLY, PFE</span></div>
+          </div>
+        </div><div class="sec-card">
+          <div class="sec-hdr">
+            <span class="sec-name">Industrials</span>
+            <span class="badge badge-red">Bearish</span>
+          </div>
+          <div class="sec-body">
+            <div class="sec-col">
+              <span class="sec-lbl clr-green">▲ TAILWINDS</span>
+              <ul class="sec-list"><li>Housing starts at 1,487K remain robust, supporting construction and building materials demand</li><li>Defense/aerospace sub-sector likely benefiting from Middle East military escalation and increased government spending</li></ul>
+            </div>
+            <div class="sec-col">
+              <span class="sec-lbl clr-red">▼ HEADWINDS</span>
+              <ul class="sec-list"><li>Sector down -0.39% as oil surge to $100+ dramatically raises transportation and manufacturing input costs</li><li>Germany manufacturing PMI at 43.2 signals deep global industrial contraction, weighing on multinational industrials</li><li>Consumer spending strain and weak sentiment threaten durable goods demand and capex cycles</li></ul>
+            </div>
+          </div>
+          <div class="sec-footer">
+            <div><span class="sec-lbl">MACRO SENSITIVITY</span> Cyclical / Energy-cost sensitive</div>
+            <div><span class="sec-lbl">KEY CATALYST</span> Surging energy costs from the Iran conflict threaten industrial margins broadly, though defense names like LMT and RTX may diverge positively on increased military spending.</div>
+            <div><span class="sec-lbl">WATCH</span> <span class="clr-amber">CAT, GE, HON, LMT</span></div>
+          </div>
+        </div><div class="sec-card">
+          <div class="sec-hdr">
+            <span class="sec-name">Consumer Discretionary</span>
+            <span class="badge badge-red">Bearish</span>
+          </div>
+          <div class="sec-body">
+            <div class="sec-col">
+              <span class="sec-lbl clr-green">▲ TAILWINDS</span>
+              <ul class="sec-list"><li>Sector ETF slightly positive at +0.13%, showing resilience likely driven by mega-cap names like AMZN and TSLA</li><li>Retail sales at $738B indicate spending has not yet collapsed despite sentiment weakness</li></ul>
+            </div>
+            <div class="sec-col">
+              <span class="sec-lbl clr-red">▼ HEADWINDS</span>
+              <ul class="sec-list"><li>Record gasoline price jump squeezing consumer wallets directly reduces discretionary spending capacity</li><li>Consumer sentiment at 56.6 is deeply depressed, historically a leading indicator of spending pullback</li><li>Surging inflation from Iran war price pass-throughs erodes real wages and purchasing power</li></ul>
+            </div>
+          </div>
+          <div class="sec-footer">
+            <div><span class="sec-lbl">MACRO SENSITIVITY</span> Consumer confidence / Disposable income driven</div>
+            <div><span class="sec-lbl">KEY CATALYST</span> Record gasoline price surge and news of companies raising prices due to Iran war are directly cannibalizing discretionary spending budgets for middle-income consumers.</div>
+            <div><span class="sec-lbl">WATCH</span> <span class="clr-amber">AMZN, TSLA, HD, NKE</span></div>
+          </div>
+        </div><div class="sec-card">
+          <div class="sec-hdr">
+            <span class="sec-name">Real Estate</span>
+            <span class="badge badge-green">Cautiously Bullish</span>
+          </div>
+          <div class="sec-body">
+            <div class="sec-col">
+              <span class="sec-lbl clr-green">▲ TAILWINDS</span>
+              <ul class="sec-list"><li>Sector ETF up +0.21%, outperforming most sectors as investors seek yield and inflation hedges</li><li>Housing starts robust at 1,487K indicating underlying housing demand strength</li><li>Real assets provide natural inflation hedge as rents and property values tend to rise with CPI</li></ul>
+            </div>
+            <div class="sec-col">
+              <span class="sec-lbl clr-red">▼ HEADWINDS</span>
+              <ul class="sec-list"><li>30Y mortgage rate at 6.37% and rising 10Y yield (4.32%) pressure property valuations and transaction volumes</li><li>Potential recessionary impact from oil shock could raise vacancy rates in commercial properties</li></ul>
+            </div>
+          </div>
+          <div class="sec-footer">
+            <div><span class="sec-lbl">MACRO SENSITIVITY</span> Rate-sensitive / Inflation-hedging characteristics</div>
+            <div><span class="sec-lbl">KEY CATALYST</span> Real estate's relative outperformance reflects its dual role as an inflation hedge during the oil-driven price surge while benefiting from expectations of eventual Fed easing.</div>
+            <div><span class="sec-lbl">WATCH</span> <span class="clr-amber">PLD, AMT, EQIX, SPG</span></div>
+          </div>
+        </div><div class="sec-card">
+          <div class="sec-hdr">
+            <span class="sec-name">Utilities</span>
+            <span class="badge badge-amber">Neutral</span>
+          </div>
+          <div class="sec-body">
+            <div class="sec-col">
+              <span class="sec-lbl clr-green">▲ TAILWINDS</span>
+              <ul class="sec-list"><li>Defensive positioning should attract capital as geopolitical uncertainty escalates around Iran conflict</li><li>Regulated revenue streams provide earnings visibility during economic uncertainty</li></ul>
+            </div>
+            <div class="sec-col">
+              <span class="sec-lbl clr-red">▼ HEADWINDS</span>
+              <ul class="sec-list"><li>Sector down -0.40%, underperforming despite risk-off environment suggesting rate sensitivity dominating</li><li>Rising 10Y Treasury yield (4.32%) makes utility dividend yields less attractive on a relative basis</li><li>Natural gas price increase (+1.02%) raises input costs for gas-fired power generation</li></ul>
+            </div>
+          </div>
+          <div class="sec-footer">
+            <div><span class="sec-lbl">MACRO SENSITIVITY</span> Rate-sensitive / Defensive</div>
+            <div><span class="sec-lbl">KEY CATALYST</span> Rising long-term Treasury yields are offsetting the traditional defensive bid for utilities, creating a tug-of-war between safety demand and rate competition.</div>
+            <div><span class="sec-lbl">WATCH</span> <span class="clr-amber">NEE, SO, DUK, AEP</span></div>
+          </div>
+        </div></div>
+</div></div>
+
+<!-- ═══ SENTIMENT ═══ -->
+<div id="tab-sentiment" class="tab"><div class="wrap">
+  <div class="sent-grid">
+    <div>
+      <div class="sent-col-title clr-green">▲ Bullish Themes</div>
+      <div class="sent-item">
+      <div class="sent-theme clr-green">Technology Sector Resilience Amid Geopolitical Turmoil</div>
+      <p class="sent-detail">Technology and Consumer Discretionary are the only major sectors posting gains, with Nasdaq 100 up 0.14% even as broader markets decline, suggesting tech is acting as a relative safe haven. The sector's lower sensitivity to energy costs and strong secular growth themes continue to attract capital rotation during the Iran conflict escalation.</p>
+      <span class="sent-assets">QQQ, XLK, Nasdaq 100, mega-cap tech stocks</span>
+    </div><div class="sent-item">
+      <div class="sent-theme clr-green">Gold at Record Levels as Geopolitical Hedge</div>
+      <p class="sent-detail">Gold at $4,750 reflects extraordinary safe-haven demand driven by the Iran war, Strait of Hormuz blockade threats, and persistent inflation concerns with CPI at 330.293 and breakeven inflation at 2.36%. The combination of negative real rates (Fed Funds 3.64% vs elevated inflation) and geopolitical risk premium supports continued upside in precious metals.</p>
+      <span class="sent-assets">Gold, GLD, gold miners (GDX), silver</span>
+    </div><div class="sent-item">
+      <div class="sent-theme clr-green">Positive Yield Curve Signals Economic Normalization</div>
+      <p class="sent-detail">The 10Y-2Y spread has turned positive at 0.50%, ending any inversion and historically signaling that recession risk may be receding or already priced in. With the Fed at 3.64% and the curve steepening, banks and financial intermediaries benefit from improved net interest margins over time.</p>
+      <span class="sent-assets">Regional banks (KRE), large-cap banks, XLF (longer-term)</span>
+    </div>
+    </div>
+    <div>
+      <div class="sent-col-title clr-red">▼ Bearish Themes</div>
+      <div class="sent-item">
+      <div class="sent-theme clr-red">Iran War and Strait of Hormuz Blockade Driving Oil Shock</div>
+      <p class="sent-detail">Crude oil has surged nearly 8% to $104 with WTI referenced at $114, as Trump threatens a U.S. Navy blockade of Iran's ports after peace talks collapsed, creating the most severe oil supply disruption risk since the 1970s. This energy shock directly threatens consumer spending, corporate margins, and global growth, with gasoline prices already at record levels squeezing household budgets.</p>
+      <span class="sent-assets">Consumer discretionary (ex-tech), airlines, transports, broad equities, HYG</span>
+    </div><div class="sent-item">
+      <div class="sent-theme clr-red">Consumer Under Severe Strain From Inflation and Energy Costs</div>
+      <p class="sent-detail">Consumer sentiment has cratered to 56.6 while inflation surged in March driven by war-related price increases, and record gasoline prices are eroding purchasing power for American households. Retail sales at $738B face significant headwinds as the energy tax on consumers grows, threatening the primary engine of U.S. GDP growth.</p>
+      <span class="sent-assets">XRT (retail), consumer staples, XLY, restaurants, leisure stocks</span>
+    </div><div class="sent-item">
+      <div class="sent-theme clr-red">Rising Long-Term Rates Pressuring Risk Assets and Housing</div>
+      <p class="sent-detail">The 10-year Treasury yield climbed to 4.32% with 30-year mortgage rates at 6.37%, creating significant headwinds for rate-sensitive sectors and threatening the 1,487K housing starts pace. High yield bonds (HYG down 0.40%) and investment grade credit (LQD down 0.26%) are both weakening, signaling broader credit stress as war-driven inflation complicates the Fed's easing path.</p>
+      <span class="sent-assets">TLT, HYG, LQD, homebuilders (XHB), REITs, utilities</span>
+    </div>
+    </div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+    <div>
+      <div class="sec-hdr-row"><div class="sec-hdr">Emerging Debates</div></div>
+      <div class="debate-item">
+      <div class="debate-title">Has the Market Reached Peak Fear or Is the Iran Escalation Just Beginning?</div>
+      <div class="debate-sides">
+        <div><span class="clr-green">BULL:</span> VIX at 19.23 and declining suggests markets are already pricing in the worst-case scenario, and any diplomatic breakthrough on Iran would trigger a sharp relief rally.</div>
+        <div><span class="clr-red">BEAR:</span> A physical U.S. Navy blockade of the Strait of Hormuz could remove 20% of global oil supply from the market, and VIX at only 19 suggests complacency rather than adequate risk pricing for a major military escalation.</div>
+      </div>
+    </div><div class="debate-item">
+      <div class="debate-title">Can the Fed Continue Cutting Rates With War-Driven Inflation Surging?</div>
+      <div class="debate-sides">
+        <div><span class="clr-green">BULL:</span> The Fed will look through supply-driven energy inflation and continue easing to support the weakening consumer, as unemployment at 4.3% signals labor market softening that warrants accommodation.</div>
+        <div><span class="clr-red">BEAR:</span> With CPI accelerating and breakeven inflation at 2.36%, the Fed risks losing credibility if it cuts further into an inflationary oil shock, potentially forcing a hawkish pause that blindsides markets expecting continued easing.</div>
+      </div>
+    </div>
+    </div>
+    <div>
+      <div class="sec-hdr-row"><div class="sec-hdr">Capital Rotation Signals</div></div>
+      <div class="card">
+        <table class="rot-tbl">
+          <thead><tr><th style="font-size:9px;color:var(--dim);padding:8px 12px;border-bottom:1px solid var(--border);text-align:left;background:var(--s2);">FROM</th><th></th><th style="font-size:9px;color:var(--dim);padding:8px 12px;border-bottom:1px solid var(--border);text-align:left;background:var(--s2);">TO</th><th style="font-size:9px;color:var(--dim);padding:8px 12px;border-bottom:1px solid var(--border);text-align:left;background:var(--s2);">SIGNAL</th></tr></thead>
+          <tbody><tr>
+      <td class="rot-from">Energy-sensitive industrials and transports</td>
+      <td class="rot-arrow">→</td>
+      <td class="rot-to clr-green">Asset-light technology and software</td>
+      <td class="rot-signal">The oil shock disproportionately hurts energy-intensive sectors while capital-light tech businesses maintain margins, explaining Nasdaq outperformance versus Dow's 0.56% decline.</td>
+    </tr><tr>
+      <td class="rot-from">Financials (XLF -1.09%)</td>
+      <td class="rot-arrow">→</td>
+      <td class="rot-to clr-green">Real Estate (XLRE +0.21%)</td>
+      <td class="rot-signal">Despite rising rates, real estate is outperforming financials as investors seek inflation-hedged real assets while bank earnings face credit quality concerns from the energy shock.</td>
+    </tr><tr>
+      <td class="rot-from">Developed market equities (Europe, Japan)</td>
+      <td class="rot-arrow">→</td>
+      <td class="rot-to clr-green">U.S. large-cap tech and gold</td>
+      <td class="rot-signal">Europe faces the most direct economic fallout from Middle East conflict via energy dependence, while weak German PMIs confirm deterioration, pushing capital toward U.S. tech and safe havens.</td>
+    </tr><tr>
+      <td class="rot-from">Crypto and speculative assets</td>
+      <td class="rot-arrow">→</td>
+      <td class="rot-to clr-green">Gold and defensive commodities</td>
+      <td class="rot-signal">Bitcoin down 2.8% and Ethereum down 3.9% while gold holds near records suggests the risk-off rotation is favoring traditional safe havens over digital alternatives during genuine geopolitical crisis.</td>
+    </tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div></div>
+
+<!-- ═══ MARKETS ═══ -->
+<div id="tab-markets" class="tab"><div class="wrap"><div class="mkt-grid"><div class="mkt-block"><div class="mkt-block-title">US Equities</div><table class="mkt-tbl"><thead><tr><th>Name</th><th>Price</th><th>Chg%</th></tr></thead><tbody><tr><td>S&P 500</td><td class="mkt-price">6,816.89</td><td class="clr-red mkt-chg">▼0.11%</td></tr><tr><td>Nasdaq 100</td><td class="mkt-price">25,116.34</td><td class="clr-green mkt-chg">▲0.14%</td></tr><tr><td>Dow Jones</td><td class="mkt-price">47,916.57</td><td class="clr-red mkt-chg">▼0.56%</td></tr><tr><td>Russell 2000</td><td class="mkt-price">2,630.59</td><td class="clr-red mkt-chg">▼0.22%</td></tr><tr><td>VIX</td><td class="mkt-price">19.23</td><td class="clr-red mkt-chg">▼1.33%</td></tr></tbody></table></div><div class="mkt-block"><div class="mkt-block-title">Sector ETFs</div><table class="mkt-tbl"><thead><tr><th>Name</th><th>Price</th><th>Chg%</th></tr></thead><tbody><tr><td>Technology</td><td class="mkt-price">142.62</td><td class="clr-green mkt-chg">▲0.39%</td></tr><tr><td>Financials</td><td class="mkt-price">50.77</td><td class="clr-red mkt-chg">▼1.09%</td></tr><tr><td>Energy</td><td class="mkt-price">56.94</td><td class="clr-red mkt-chg">▼0.68%</td></tr><tr><td>Healthcare</td><td class="mkt-price">147.31</td><td class="clr-red mkt-chg">▼1.35%</td></tr><tr><td>Industrials</td><td class="mkt-price">171.52</td><td class="clr-red mkt-chg">▼0.39%</td></tr><tr><td>Consumer Disc</td><td class="mkt-price">112.89</td><td class="clr-green mkt-chg">▲0.13%</td></tr><tr><td>Utilities</td><td class="mkt-price">46.96</td><td class="clr-red mkt-chg">▼0.40%</td></tr><tr><td>Real Estate</td><td class="mkt-price">42.82</td><td class="clr-green mkt-chg">▲0.21%</td></tr></tbody></table></div><div class="mkt-block"><div class="mkt-block-title">Fixed Income</div><table class="mkt-tbl"><thead><tr><th>Name</th><th>Price</th><th>Chg%</th></tr></thead><tbody><tr><td>10Y Treasury</td><td class="mkt-price">4.32</td><td class="clr-green mkt-chg">▲0.56%</td></tr><tr><td>2Y Treasury</td><td class="mkt-price">3.59</td><td class="clr-green mkt-chg">▲0.14%</td></tr><tr><td>TLT (20Y)</td><td class="mkt-price">86.49</td><td class="clr-red mkt-chg">▼0.24%</td></tr><tr><td>HYG (HY Bond)</td><td class="mkt-price">79.96</td><td class="clr-red mkt-chg">▼0.40%</td></tr><tr><td>LQD (IG Bond)</td><td class="mkt-price">109.20</td><td class="clr-red mkt-chg">▼0.26%</td></tr></tbody></table></div><div class="mkt-block"><div class="mkt-block-title">Commodities</div><table class="mkt-tbl"><thead><tr><th>Name</th><th>Price</th><th>Chg%</th></tr></thead><tbody><tr><td>Crude Oil</td><td class="mkt-price">104.13</td><td class="clr-green mkt-chg">▲7.83%</td></tr><tr><td>Natural Gas</td><td class="mkt-price">2.67</td><td class="clr-green mkt-chg">▲1.02%</td></tr><tr><td>Gold</td><td class="mkt-price">4,750.20</td><td class="clr-red mkt-chg">▼0.25%</td></tr><tr><td>Silver</td><td class="mkt-price">74.57</td><td class="clr-red mkt-chg">▼2.30%</td></tr><tr><td>Copper</td><td class="mkt-price">5.85</td><td class="clr-red mkt-chg">▼0.32%</td></tr><tr><td>Wheat</td><td class="mkt-price">577.75</td><td class="clr-green mkt-chg">▲1.18%</td></tr></tbody></table></div><div class="mkt-block"><div class="mkt-block-title">Currencies</div><table class="mkt-tbl"><thead><tr><th>Name</th><th>Price</th><th>Chg%</th></tr></thead><tbody><tr><td>USD Index</td><td class="mkt-price">98.96</td><td class="clr-green mkt-chg">▲0.31%</td></tr><tr><td>EUR/USD</td><td class="mkt-price">1.17</td><td class="clr-green mkt-chg">▲0.02%</td></tr><tr><td>GBP/USD</td><td class="mkt-price">1.34</td><td class="clr-red mkt-chg">▼0.14%</td></tr><tr><td>USD/JPY</td><td class="mkt-price">159.66</td><td class="clr-green mkt-chg">▲0.34%</td></tr><tr><td>USD/CNY</td><td class="mkt-price">6.83</td><td class="clr-green mkt-chg">▲0.01%</td></tr><tr><td>USD/INR</td><td class="mkt-price">93.35</td><td class="clr-green mkt-chg">▲0.95%</td></tr></tbody></table></div><div class="mkt-block"><div class="mkt-block-title">Crypto</div><table class="mkt-tbl"><thead><tr><th>Name</th><th>Price</th><th>Chg%</th></tr></thead><tbody><tr><td>Bitcoin</td><td class="mkt-price">70,997.94</td><td class="clr-red mkt-chg">▼2.81%</td></tr><tr><td>Ethereum</td><td class="mkt-price">2,195.27</td><td class="clr-red mkt-chg">▼3.94%</td></tr><tr><td>Solana</td><td class="mkt-price">82.08</td><td class="clr-red mkt-chg">▼3.38%</td></tr></tbody></table></div></div></div></div>
+
+<!-- ═══ INDICATORS ═══ -->
+<div id="tab-indicators" class="tab"><div class="wrap">
+  <div class="chart-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">
+    <div class="card al-g">
+      <div class="card-hdr"><span class="card-title">Fed Funds Rate (%) — 24 Month History</span><span class="badge badge-green">FRED</span></div>
+      <div class="card-body"><canvas id="fed-chart" height="110"></canvas></div>
+    </div>
+    <div class="card al-a">
+      <div class="card-hdr"><span class="card-title">CPI Index — 24 Month History</span><span class="badge badge-amber">FRED</span></div>
+      <div class="card-body"><canvas id="cpi-chart" height="110"></canvas></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-hdr"><span class="card-title">All FRED Macro Indicators</span><span class="badge badge-blue">FEDERAL RESERVE</span></div>
+    <table class="ind-tbl"><tbody><tr><td class="ind-lbl">Fed Funds Rate (%)</td><td class="ind-val">3.64</td></tr><tr><td class="ind-lbl">CPI Index</td><td class="ind-val">330.293</td></tr><tr><td class="ind-lbl">Core CPI</td><td class="ind-val">334.165</td></tr><tr><td class="ind-lbl">Unemployment (%)</td><td class="ind-val">4.3</td></tr><tr><td class="ind-lbl">GDP (B USD)</td><td class="ind-val">31422.526</td></tr><tr><td class="ind-lbl">Retail Sales (M USD)</td><td class="ind-val">738366.0</td></tr><tr><td class="ind-lbl">Housing Starts (K)</td><td class="ind-val">1487.0</td></tr><tr><td class="ind-lbl">WTI Crude ($/bbl)</td><td class="ind-val">114.01</td></tr><tr><td class="ind-lbl">10Y-2Y Spread</td><td class="ind-val">0.5</td></tr><tr><td class="ind-lbl">10Y Breakeven Inflation</td><td class="ind-val">2.36</td></tr><tr><td class="ind-lbl">M2 Money Supply (B)</td><td class="ind-val">22667.3</td></tr><tr><td class="ind-lbl">Consumer Sentiment</td><td class="ind-val">56.6</td></tr><tr><td class="ind-lbl">Nonfarm Payrolls (K)</td><td class="ind-val">158637</td></tr><tr><td class="ind-lbl">Industrial Production</td><td class="ind-val">102.551</td></tr><tr><td class="ind-lbl">30Y Mortgage Rate (%)</td><td class="ind-val">6.37</td></tr></tbody></table>
+  </div>
+</div></div>
+
+<!-- ═══ NEWS FEED ═══ -->
+<div id="tab-news" class="tab"><div class="wrap">
+  <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;">
+    <span style="font-size:11px;color:var(--sub);">Bias indicators:</span>
+    <span style="display:flex;align-items:center;gap:5px;font-size:11px;color:#3b82f6;"><span style="width:8px;height:8px;border-radius:50%;background:#3b82f6;display:inline-block;"></span> Left-leaning</span>
+    <span style="display:flex;align-items:center;gap:5px;font-size:11px;color:#6b7280;"><span style="width:8px;height:8px;border-radius:50%;background:#6b7280;display:inline-block;"></span> Center</span>
+    <span style="display:flex;align-items:center;gap:5px;font-size:11px;color:#ef4444;"><span style="width:8px;height:8px;border-radius:50%;background:#ef4444;display:inline-block;"></span> Right-leaning</span>
+  </div>
+  <div class="card">
+    <div class="news-list" style="padding:0 16px;"><div class="news-row">
+          <div class="news-bias-dot" style="background:#6b7280;" title="CENTER"></div>
+          <div class="news-content">
+            <div class="news-meta"><span class="news-src">NYT Economy</span><span class="news-bias-lbl" style="color:#6b7280;">CENTER</span></div>
+            <a href="https://www.nytimes.com/2026/04/11/business/europe-economy-trump-trade-iran.html" target="_blank" class="news-title">Fallout of War Piles Economic Pain Onto Europe’s Political Stress</a>
+          </div>
+        </div><div class="news-row">
+          <div class="news-bias-dot" style="background:#3b82f6;" title="LEFT"></div>
+          <div class="news-content">
+            <div class="news-meta"><span class="news-src">NYT Economy</span><span class="news-bias-lbl" style="color:#3b82f6;">LEFT</span></div>
+            <a href="https://www.nytimes.com/2026/04/10/us/politics/democrats-trump-steel-white-house-ballroom.html" target="_blank" class="news-title">Democrats Denounce Trump’s Plan to Use Foreign Steel in White House Ballroom</a>
+          </div>
+        </div><div class="news-row">
+          <div class="news-bias-dot" style="background:#6b7280;" title="CENTER"></div>
+          <div class="news-content">
+            <div class="news-meta"><span class="news-src">NYT Economy</span><span class="news-bias-lbl" style="color:#6b7280;">CENTER</span></div>
+            <a href="https://www.nytimes.com/2026/04/10/business/economy/gasoline-price-rise.html" target="_blank" class="news-title">A Record Jump in U.S. Gasoline Prices Is Squeezing Consumers</a>
+          </div>
+        </div><div class="news-row">
+          <div class="news-bias-dot" style="background:#6b7280;" title="CENTER"></div>
+          <div class="news-content">
+            <div class="news-meta"><span class="news-src">NYT Economy</span><span class="news-bias-lbl" style="color:#6b7280;">CENTER</span></div>
+            <a href="https://www.nytimes.com/2026/04/10/business/economy/iran-war-inflation-company-prices.html" target="_blank" class="news-title">The Iran War Has Prompted Some Companies to Raise Prices</a>
+          </div>
+        </div><div class="news-row">
+          <div class="news-bias-dot" style="background:#6b7280;" title="CENTER"></div>
+          <div class="news-content">
+            <div class="news-meta"><span class="news-src">NYT Economy</span><span class="news-bias-lbl" style="color:#6b7280;">CENTER</span></div>
+            <a href="https://www.nytimes.com/2026/04/10/business/economy/what-to-know-about-the-report.html" target="_blank" class="news-title">U.S. Inflation Surged in March as Iran War Pushed Up Prices</a>
+          </div>
+        </div><div class="news-row">
+          <div class="news-bias-dot" style="background:#6b7280;" title="CENTER"></div>
+          <div class="news-content">
+            <div class="news-meta"><span class="news-src">NYT Economy</span><span class="news-bias-lbl" style="color:#6b7280;">CENTER</span></div>
+            <a href="https://www.nytimes.com/2026/04/10/business/economy/consumer-spending-economy.html" target="_blank" class="news-title">Consumer Spending, Engine of the U.S. Economy, Is Under Strain</a>
+          </div>
+        </div><div class="news-row">
+          <div class="news-bias-dot" style="background:#6b7280;" title="CENTER"></div>
+          <div class="news-content">
+            <div class="news-meta"><span class="news-src">NYT Business</span><span class="news-bias-lbl" style="color:#6b7280;">CENTER</span></div>
+            <a href="https://www.nytimes.com/2026/04/13/business/energy-environment/china-energy-battery-grid.html" target="_blank" class="news-title">China’s Electrostate Is Poised to Win From War in the Middle East</a>
+          </div>
+        </div><div class="news-row">
+          <div class="news-bias-dot" style="background:#6b7280;" title="CENTER"></div>
+          <div class="news-content">
+            <div class="news-meta"><span class="news-src">NYT Business</span><span class="news-bias-lbl" style="color:#6b7280;">CENTER</span></div>
+            <a href="https://www.nytimes.com/2026/04/12/technology/elon-musk-tiktok.html" target="_blank" class="news-title">Elon Musk, Who Owns X, Appears to Post on TikTok</a>
+          </div>
+        </div><div class="news-row">
+          <div class="news-bias-dot" style="background:#6b7280;" title="CENTER"></div>
+          <div class="news-content">
+            <div class="news-meta"><span class="news-src">NYT Business</span><span class="news-bias-lbl" style="color:#6b7280;">CENTER</span></div>
+            <a href="https://www.nytimes.com/2026/04/12/business/oil-prices-surge-above-100-after-peace-talks-fail-and-trump-threatens-blockade.html" target="_blank" class="news-title">Oil Prices Surge Above $100 After Peace Talks Fail and Trump Threatens Blockade</a>
+          </div>
+        </div><div class="news-row">
+          <div class="news-bias-dot" style="background:#6b7280;" title="CENTER"></div>
+          <div class="news-content">
+            <div class="news-meta"><span class="news-src">NYT Business</span><span class="news-bias-lbl" style="color:#6b7280;">CENTER</span></div>
+            <a href="https://www.nytimes.com/2026/04/12/world/americas/canada-quebec-premier-christine-frechette.html" target="_blank" class="news-title">Christine Fréchette Is Chosen to Lead Coalition Avenir Québec</a>
+          </div>
+        </div><div class="news-row">
+          <div class="news-bias-dot" style="background:#6b7280;" title="CENTER"></div>
+          <div class="news-content">
+            <div class="news-meta"><span class="news-src">NYT Business</span><span class="news-bias-lbl" style="color:#6b7280;">CENTER</span></div>
+            <a href="https://www.nytimes.com/2026/04/12/business/annoyance-economy-costs.html" target="_blank" class="news-title">The ‘Annoyance Economy’ Is More Than Just Annoying</a>
+          </div>
+        </div><div class="news-row">
+          <div class="news-bias-dot" style="background:#6b7280;" title="CENTER"></div>
+          <div class="news-content">
+            <div class="news-meta"><span class="news-src">NYT Business</span><span class="news-bias-lbl" style="color:#6b7280;">CENTER</span></div>
+            <a href="https://www.nytimes.com/2026/04/12/business/peloton-peter-stern.html" target="_blank" class="news-title">Peloton’s Latest Leader Thinks He Can Coach It Back to Health</a>
+          </div>
+        </div><div class="news-row">
+          <div class="news-bias-dot" style="background:#6b7280;" title="CENTER"></div>
+          <div class="news-content">
+            <div class="news-meta"><span class="news-src">MarketWatch</span><span class="news-bias-lbl" style="color:#6b7280;">CENTER</span></div>
+            <a href="https://www.marketwatch.com/story/elon-musk-in-a-post-on-x-says-some-of-his-trump-posts-went-too-far-and-that-he-regrets-them-90e73a6a?mod=mw_rss_realtimeheadlines" target="_blank" class="news-title">Elon Musk in a post on X says some of his Trump posts ‘went too far’ and that he regrets them</a>
+          </div>
+        </div><div class="news-row">
+          <div class="news-bias-dot" style="background:#6b7280;" title="CENTER"></div>
+          <div class="news-content">
+            <div class="news-meta"><span class="news-src">MarketWatch</span><span class="news-bias-lbl" style="color:#6b7280;">CENTER</span></div>
+            <a href="https://www.marketwatch.com/story/bank-of-england-decision-on-thursday-will-be-at-12-02-p-m-local-time-instead-of-12-p-m-due-to-ve-day-two-minutes-of-silence-1f6bed66?mod=mw_rss_realtimeheadlines" target="_blank" class="news-title">Bank of England decision on Thursday will be at 12:02 p.m. local time instead of 12 p.m., due to VE Day’s two minutes of silence</a>
+          </div>
+        </div><div class="news-row">
+          <div class="news-bias-dot" style="background:#6b7280;" title="CENTER"></div>
+          <div class="news-content">
+            <div class="news-meta"><span class="news-src">MarketWatch</span><span class="news-bias-lbl" style="color:#6b7280;">CENTER</span></div>
+            <a href="https://www.marketwatch.com/story/swiss-national-bank-cuts-interest-rates-by-a-half-point-to-0-5-ed1fce78?mod=mw_rss_realtimeheadlines" target="_blank" class="news-title">Swiss National Bank cuts interest rates by a half point to 0.5%</a>
+          </div>
+        </div><div class="news-row">
+          <div class="news-bias-dot" style="background:#6b7280;" title="CENTER"></div>
+          <div class="news-content">
+            <div class="news-meta"><span class="news-src">MarketWatch</span><span class="news-bias-lbl" style="color:#6b7280;">CENTER</span></div>
+            <a href="https://www.marketwatch.com/story/dollar-jumps-0-5-to-0-8890-francs-047c6b4d?mod=mw_rss_realtimeheadlines" target="_blank" class="news-title">Dollar jumps 0.5% to 0.8890 francs</a>
+          </div>
+        </div><div class="news-row">
+          <div class="news-bias-dot" style="background:#6b7280;" title="CENTER"></div>
+          <div class="news-content">
+            <div class="news-meta"><span class="news-src">MarketWatch</span><span class="news-bias-lbl" style="color:#6b7280;">CENTER</span></div>
+            <a href="https://www.marketwatch.com/story/germany-flash-manufacturing-pmi-rises-to-4-month-high-of-43-2-b9e50a64?mod=mw_rss_realtimeheadlines" target="_blank" class="news-title">Germany flash manufacturing PMI rises to 4-month high of 43.2</a>
+          </div>
+        </div><div class="news-row">
+          <div class="news-bias-dot" style="background:#6b7280;" title="CENTER"></div>
+          <div class="news-content">
+            <div class="news-meta"><span class="news-src">MarketWatch</span><span class="news-bias-lbl" style="color:#6b7280;">CENTER</span></div>
+            <a href="https://www.marketwatch.com/story/germany-flash-services-pmi-falls-to-9-month-low-of-49-4-5e5d2763?mod=mw_rss_realtimeheadlines" target="_blank" class="news-title">Germany flash services PMI falls to 9-month low of 49.4</a>
+          </div>
+        </div><div class="news-row">
+          <div class="news-bias-dot" style="background:#6b7280;" title="CENTER"></div>
+          <div class="news-content">
+            <div class="news-meta"><span class="news-src">CNBC</span><span class="news-bias-lbl" style="color:#6b7280;">CENTER</span></div>
+            <a href="https://www.cnbc.com/2026/04/13/markets-trump-strait-of-hormuz-blockade-gold-stocks-dollar.html" target="_blank" class="news-title">From panic to pricing in: Are markets past 'peak fear and sell-off' despite oil price surge?</a>
+          </div>
+        </div><div class="news-row">
+          <div class="news-bias-dot" style="background:#6b7280;" title="CENTER"></div>
+          <div class="news-content">
+            <div class="news-meta"><span class="news-src">CNBC</span><span class="news-bias-lbl" style="color:#6b7280;">CENTER</span></div>
+            <a href="https://www.cnbc.com/2026/04/12/oil-prices-iran-war-strait-hormuz-blockade.html" target="_blank" class="news-title">Oil prices surge above $100 as U.S. Navy to blockade Iran's ports after peace talks fail</a>
+          </div>
+        </div><div class="news-row">
+          <div class="news-bias-dot" style="background:#6b7280;" title="CENTER"></div>
+          <div class="news-content">
+            <div class="news-meta"><span class="news-src">CNBC</span><span class="news-bias-lbl" style="color:#6b7280;">CENTER</span></div>
+            <a href="https://www.cnbc.com/2026/04/12/trump-pope-leo-catholic-church-iran.html" target="_blank" class="news-title">Trump blasts Pope Leo for criticism of U.S. foreign policy</a>
+          </div>
+        </div><div class="news-row">
+          <div class="news-bias-dot" style="background:#6b7280;" title="CENTER"></div>
+          <div class="news-content">
+            <div class="news-meta"><span class="news-src">CNBC</span><span class="news-bias-lbl" style="color:#6b7280;">CENTER</span></div>
+            <a href="https://www.cnbc.com/2026/04/13/eric-swalwell-suspends-campaign-california-governor.html" target="_blank" class="news-title">Eric Swalwell suspends campaign for California governor amid sexual misconduct allegations</a>
+          </div>
+        </div><div class="news-row">
+          <div class="news-bias-dot" style="background:#6b7280;" title="CENTER"></div>
+          <div class="news-content">
+            <div class="news-meta"><span class="news-src">CNBC</span><span class="news-bias-lbl" style="color:#6b7280;">CENTER</span></div>
+            <a href="https://www.cnbc.com/2026/04/12/trump-iran-war-strait-of-hormuz.html" target="_blank" class="news-title">Trump says U.S. will blockade Strait of Hormuz after Iran peace talks fail</a>
+          </div>
+        </div><div class="news-row">
+          <div class="news-bias-dot" style="background:#6b7280;" title="CENTER"></div>
+          <div class="news-content">
+            <div class="news-meta"><span class="news-src">CNBC</span><span class="news-bias-lbl" style="color:#6b7280;">CENTER</span></div>
+            <a href="https://www.cnbc.com/2026/04/13/european-markets-stoxx-600-ftse-dax-iran-latest-hungary-election.html" target="_blank" class="news-title">European stocks set to start the week lower as Iran peace hopes fade</a>
+          </div>
+        </div></div>
+  </div>
+</div></div>
+
+<div class="footer">
+  Developed by Carlos Cubas &nbsp;|&nbsp; University of Illinois Urbana-Champaign &nbsp;|&nbsp;
+  <a href="mailto:xcubas534@gmail.com">xcubas534@gmail.com</a> &nbsp;|&nbsp;
+  <a href="https://linkedin.com/in/cubas-carlos" target="_blank">linkedin.com/in/cubas-carlos</a>
 </div>
+
+<script>
+const sparklineData = {"S&P 500": {"prices": [6878.88, 6881.62, 6816.63, 6869.5, 6830.71, 6740.02, 6795.99, 6781.48, 6775.8, 6672.62, 6632.19, 6699.38, 6716.09, 6624.7, 6606.49, 6506.48, 6581.0, 6556.37, 6591.9, 6477.16, 6368.85, 6343.72, 6528.52, 6575.32, 6582.69, 6611.83, 6616.85, 6782.81, 6824.66, 6816.89], "dates": ["2026-02-27", "2026-03-02", "2026-03-03", "2026-03-04", "2026-03-05", "2026-03-06", "2026-03-09", "2026-03-10", "2026-03-11", "2026-03-12", "2026-03-13", "2026-03-16", "2026-03-17", "2026-03-18", "2026-03-19", "2026-03-20", "2026-03-23", "2026-03-24", "2026-03-25", "2026-03-26", "2026-03-27", "2026-03-30", "2026-03-31", "2026-04-01", "2026-04-02", "2026-04-06", "2026-04-07", "2026-04-08", "2026-04-09", "2026-04-10"]}, "10Y Treasury": {"prices": [4.05, 4.06, 4.08, 4.15, 4.13, 4.14, 4.14, 4.21, 4.27, 4.28, 4.22, 4.2, 4.26, 4.28, 4.39, 4.33, 4.39, 4.33, 4.42, 4.44, 4.34, 4.31, 4.32, 4.31, 4.34, 4.34, 4.29, 4.29, 4.32], "dates": ["2026-03-02", "2026-03-03", "2026-03-04", "2026-03-05", "2026-03-06", "2026-03-09", "2026-03-10", "2026-03-11", "2026-03-12", "2026-03-13", "2026-03-16", "2026-03-17", "2026-03-18", "2026-03-19", "2026-03-20", "2026-03-23", "2026-03-24", "2026-03-25", "2026-03-26", "2026-03-27", "2026-03-30", "2026-03-31", "2026-04-01", "2026-04-02", "2026-04-06", "2026-04-07", "2026-04-08", "2026-04-09", "2026-04-10"]}, "Crude Oil": {"prices": [94.77, 83.45, 87.25, 95.73, 98.71, 93.5, 96.21, 96.32, 96.14, 98.32, 88.13, 92.35, 90.32, 94.48, 99.64, 102.88, 101.38, 100.12, 111.54, 112.41, 112.95, 94.41, 97.87, 96.57, 104.11], "dates": ["2026-03-09", "2026-03-10", "2026-03-11", "2026-03-12", "2026-03-13", "2026-03-16", "2026-03-17", "2026-03-18", "2026-03-19", "2026-03-20", "2026-03-23", "2026-03-24", "2026-03-25", "2026-03-26", "2026-03-27", "2026-03-30", "2026-03-31", "2026-04-01", "2026-04-02", "2026-04-06", "2026-04-07", "2026-04-08", "2026-04-09", "2026-04-10", "2026-04-13"]}, "Gold": {"prices": [5091.5, 5229.7, 5167.4, 5115.8, 5052.5, 4994.0, 5001.0, 4889.9, 4600.7, 4570.4, 4404.1, 4399.3, 4549.8, 4375.5, 4492.0, 4526.0, 4647.6, 4783.2, 4651.5, 4656.8, 4657.1, 4749.5, 4792.2, 4761.9, 4750.2], "dates": ["2026-03-09", "2026-03-10", "2026-03-11", "2026-03-12", "2026-03-13", "2026-03-16", "2026-03-17", "2026-03-18", "2026-03-19", "2026-03-20", "2026-03-23", "2026-03-24", "2026-03-25", "2026-03-26", "2026-03-27", "2026-03-30", "2026-03-31", "2026-04-01", "2026-04-02", "2026-04-06", "2026-04-07", "2026-04-08", "2026-04-09", "2026-04-10", "2026-04-13"]}};
+
+const sparkOpts = (color, fill) => ({
+  responsive: true,
+  plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ctx.parsed.y.toLocaleString() } } },
+  scales: {
+    x: { display: false },
+    y: { display: true, position: 'right',
+         ticks: { color: '#555', font: { size: 9 }, maxTicksLimit: 4, callback: v => v >= 1000 ? (v/1000).toFixed(1)+'K' : v.toFixed(2) },
+         grid: { color: 'rgba(42,42,42,0.8)' } }
+  },
+  elements: { point: { radius: 0 }, line: { tension: 0.3, borderWidth: 2 } }
+});
+
+function makeSparkline(id, key, color, fill) {
+  const d = sparklineData[key];
+  if (!d || !d.prices.length) return;
+  new Chart(document.getElementById(id), {
+    type: 'line',
+    data: { labels: d.dates, datasets: [{ data: d.prices, borderColor: color, backgroundColor: fill, fill: true }] },
+    options: sparkOpts(color, fill)
+  });
+}
+
+const barOpts = () => ({
+  responsive: true,
+  plugins: { legend: { display: false } },
+  scales: {
+    x: { ticks: { color: '#777', font: { size: 10 } }, grid: { color: '#1a1a1a' } },
+    y: { ticks: { color: '#777', font: { size: 10 }, callback: v => parseFloat(v.toFixed(2)) + '%' }, grid: { color: '#1a1a1a' } }
+  }
+});
+
+const lineOpts = (unit) => ({
+  responsive: true,
+  plugins: { legend: { display: false } },
+  scales: {
+    x: { ticks: { color: '#777', font: { size: 9 }, maxTicksLimit: 6 }, grid: { color: '#1a1a1a' } },
+    y: { ticks: { color: '#777', font: { size: 9 }, callback: v => v + unit }, grid: { color: '#1a1a1a' } }
+  }
+});
+
+window.addEventListener('load', function() {
+  makeSparkline('sp-spark',   'S&P 500',      '#22c55e', 'rgba(34,197,94,0.08)');
+  makeSparkline('tnx-spark',  '10Y Treasury', '#3b82f6', 'rgba(59,130,246,0.08)');
+  makeSparkline('oil-spark',  'Crude Oil',    '#f59e0b', 'rgba(245,158,11,0.08)');
+  makeSparkline('gold-spark', 'Gold',         '#8b5cf6', 'rgba(139,92,246,0.08)');
+
+  const sc = document.getElementById('sector-chart');
+  if (sc) new Chart(sc, { type:'bar', data:{ labels:["Technology", "Financials", "Energy", "Healthcare", "Industrials", "Consumer Disc", "Utilities", "Real Estate"], datasets:[{ data:[0.39, -1.09, -0.68, -1.35, -0.39, 0.13, -0.4, 0.21], backgroundColor:["#22c55e", "#ef4444", "#ef4444", "#ef4444", "#ef4444", "#22c55e", "#ef4444", "#22c55e"], borderRadius:4 }] }, options:barOpts() });
+
+  const fc = document.getElementById('fed-chart');
+  if (fc) new Chart(fc, { type:'line', data:{ labels:["2024-04-01", "2024-05-01", "2024-06-01", "2024-07-01", "2024-08-01", "2024-09-01", "2024-10-01", "2024-11-01", "2024-12-01", "2025-01-01", "2025-02-01", "2025-03-01", "2025-04-01", "2025-05-01", "2025-06-01", "2025-07-01", "2025-08-01", "2025-09-01", "2025-10-01", "2025-11-01", "2025-12-01", "2026-01-01", "2026-02-01", "2026-03-01"], datasets:[{ data:[5.33, 5.33, 5.33, 5.33, 5.33, 5.13, 4.83, 4.64, 4.48, 4.33, 4.33, 4.33, 4.33, 4.33, 4.33, 4.33, 4.33, 4.22, 4.09, 3.88, 3.72, 3.64, 3.64, 3.64], borderColor:'#22c55e', backgroundColor:'rgba(34,197,94,0.06)', fill:true, tension:0.3, borderWidth:2, pointRadius:0 }] }, options:lineOpts('%') });
+
+  const ci = document.getElementById('cpi-chart');
+  if (ci) new Chart(ci, { type:'line', data:{ labels:["2024-04-01", "2024-05-01", "2024-06-01", "2024-07-01", "2024-08-01", "2024-09-01", "2024-10-01", "2024-11-01", "2024-12-01", "2025-01-01", "2025-02-01", "2025-03-01", "2025-04-01", "2025-05-01", "2025-06-01", "2025-07-01", "2025-08-01", "2025-09-01", "2025-11-01", "2025-12-01", "2026-01-01", "2026-02-01", "2026-03-01"], datasets:[{ data:[313.023, 313.175, 313.044, 313.569, 314.062, 314.732, 315.631, 316.528, 317.604, 318.961, 319.679, 319.785, 320.302, 320.62, 321.435, 322.169, 323.291, 324.245, 325.063, 326.031, 326.588, 327.46, 330.293], borderColor:'#f59e0b', backgroundColor:'rgba(245,158,11,0.06)', fill:true, tension:0.3, borderWidth:2, pointRadius:0 }] }, options:lineOpts('') });
+});
+
+function show(id,el){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.ntab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  el.classList.add('active');
+}
+
+function toggleGeo(i){
+  const row = document.getElementById('geo-detail-'+i);
+  const isOpen = row.style.display !== 'none';
+  document.querySelectorAll('[id^="geo-detail-"]').forEach(r => r.style.display = 'none');
+  document.querySelectorAll('.geo-expand').forEach(e => e.textContent = '▼');
+  if (!isOpen) {
+    row.style.display = 'table-row';
+    document.querySelectorAll('.geo-tr')[i].querySelector('.geo-expand').textContent = '▲';
+  }
+}
+</script>
 </body>
 </html>
